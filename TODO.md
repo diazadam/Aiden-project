@@ -7,12 +7,14 @@
 - [x] Consolidate all API keys into .env.local
 - [x] Set up Python 3.11 environment and dependencies
 - [x] Add handoff tracking system
+- [x] Build PIN-protected host executor with allowlist
+- [x] Add 22 safe commands (apps, git, dev workflows, files)
+- [x] Test host executor with dry-run and actual execution
 - [ ] Test voice mode end-to-end with ElevenLabs
+- [ ] Wire host executor into terminal agent for voice commands
 - [ ] Verify all old functionality is preserved
 
 ## Next (this week)
-- [ ] Add host executor (apps/host/) for local command execution
-- [ ] Implement PIN-guarded command execution from original aiden_pro.py
 - [ ] Add memory/conversation persistence
 - [ ] Set up n8n integration workflows
 - [ ] Create shared utilities in libs/shared/

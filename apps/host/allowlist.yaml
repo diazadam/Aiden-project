@@ -31,6 +31,14 @@
 "kill process":   "pkill -f \"{pattern}\""
 "show processes": "ps aux | grep \"{pattern}\" | grep -v grep"
 
+# Google Cloud Platform (requires service account auth)
+"gcloud auth":        "bash -lc 'gcloud auth activate-service-account --key-file \"{sa_path}\" && gcloud config set project \"{project}\"'"
+"gcloud run deploy":  "bash -lc 'gcloud run deploy \"{service}\" --source \"{path}\" --region \"{region}\" --project \"{project}\" --quiet'"
+"cloud build":        "bash -lc 'gcloud builds submit \"{path}\" --project \"{project}\"'"
+"gcs upload":         "bash -lc 'gsutil cp \"{src}\" \"gs://{bucket}/{dest}\"'"
+"gcs download":       "bash -lc 'gsutil cp \"gs://{bucket}/{src}\" \"{dest}\"'"
+"gcs list":           "bash -lc 'gsutil ls \"gs://{bucket}/{path}\"'"
+
 # Aiden-specific
 "aiden chat":     "bash -lc 'cd ~/aiden-project && make run-chat'"
 "aiden voice":    "bash -lc 'cd ~/aiden-project && make run-voice'"

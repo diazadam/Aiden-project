@@ -36,3 +36,10 @@ Record any irreversible choices here (versions, libraries, structure, providers)
 - Recording length: 8 seconds default
 - Voice ID: dXtC3XhB9GtPusIpNtQx (from consolidated config)
 - Fallback: macOS `say` always available
+
+## Host Executor
+- PIN: 2188 (in .env.local as AIDEN_PIN)
+- Allowlist: apps/host/allowlist.yaml (22 commands)
+- Logging: logs/host_executor.log (execution audit trail)
+- Security: Explicit allowlist + PIN gate + parameter validation
+- Pattern: Template system with {placeholder} runtime parameters

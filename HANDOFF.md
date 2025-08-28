@@ -9,6 +9,30 @@
 
 ## Session Log (append new entries below)
 
+### 2025-08-28 Host Bridge Added
+- **Branch:** master
+- **What I did:**
+  - Built PIN-protected local host executor (apps/host/host.py)  
+  - Created allowlist.yaml with 22 safe commands (apps, git, dev workflows)
+  - Added dry-run mode and comprehensive error handling
+  - Set PIN to 2188 as requested (updated from 4242)
+  - Added execution logging to logs/host_executor.log for audit trail
+  - Added make host-list command for easy command reference
+  - Tested successfully: list, dry-run, actual execution, error cases
+- **Why:** Enable Aiden/Jarvis safe control of Mac with explicit allowlist + PIN protection
+- **Artifacts/Paths:**
+  - apps/host/host.py - Main executor with PIN gate
+  - apps/host/allowlist.yaml - 22 permitted commands
+  - logs/host_executor.log - Execution audit trail (auto-created)
+  - PIN changed from 4242 → 2188 in .env.local
+- **Open questions:**
+  - Ready to wire this into the terminal agent for voice/chat commands?
+  - Any specific commands to add to the allowlist?
+- **Next steps:**
+  - Integrate host executor into aiden_pro.py for seamless control
+  - Test end-to-end: voice → command → execution
+  - Consider adding queue system for async operations
+
 ### 2025-08-28 Initial Consolidation
 - **Branch:** main
 - **What I did:**

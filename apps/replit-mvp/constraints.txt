@@ -1,0 +1,41 @@
+# AIDEN SUPERINTELLIGENCE - DEPENDENCY CONSTRAINTS
+# ===============================================
+# Pin critical versions for production stability
+
+# Core AI & API
+openai>=1.12.0,<2.0.0
+anthropic>=0.18.0
+
+# Web Framework
+fastapi>=0.104.0,<0.110.0
+uvicorn>=0.24.0,<0.25.0
+pydantic>=2.5.0,<3.0.0
+
+# Browser & System Control
+selenium>=4.15.0,<5.0.0
+pyautogui>=0.9.54
+webdriver-manager>=4.0.0
+
+# Communication
+twilio>=9.0.0,<10.0.0
+requests>=2.31.0
+
+# Data & Processing
+python-dotenv>=1.0.0
+httpx>=0.25.0
+
+# Database & Storage
+aiofiles>=23.0.0
+
+# Utilities
+beautifulsoup4>=4.12.0
+packaging>=23.0
+
+# System Integration (macOS)
+pyobjc-core>=10.0; sys_platform == "darwin"
+pyobjc-framework-quartz>=10.0; sys_platform == "darwin"
+pyobjc-framework-cocoa>=10.0; sys_platform == "darwin"
+
+# Development & Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0

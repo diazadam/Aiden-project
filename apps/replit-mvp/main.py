@@ -660,6 +660,99 @@ async def export_zip():
     headers = {"Content-Disposition": "attachment; filename=aiden-replit-mvp.zip"}
     return StreamingResponse(mem, media_type="application/zip", headers=headers)
 
+# ============================================================================
+# 📱 SMS INTEGRATION TEST ENDPOINT
+# ============================================================================
+
+class SMSTestIn(BaseModel):
+    to_number: str = Field(..., description="Phone number to send test SMS (include country code)")
+    message: Optional[str] = "🤖 Aiden SMS Test: Your Twilio integration is working!"
+
+@app.post("/api/sms/test")
+async def test_sms_sending(body: SMSTestIn):
+    """Test SMS sending capability using Twilio credentials"""
+    
+    # Check for Twilio environment variables
+    account_sid = os.getenv("TWILIO_ACCOUNT_SID")
+    auth_token = os.getenv("TWILIO_AUTH_TOKEN")
+    
+    if not account_sid or not auth_token:
+        return {
+            "success": False,
+            "error": "Twilio credentials not configured",
+            "setup_required": {
+                "variables": ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN"],
+                "guide": "Add these to your .env.local file"
+            }
+        }
+    
+    try:
+        # Import and test Twilio
+        from twilio.rest import Client
+        
+        client = Client(account_sid, auth_token)
+        
+        # Get available phone numbers
+        phone_numbers = client.incoming_phone_numbers.list(limit=1)
+        if not phone_numbers:
+            return {
+                "success": False,
+                "error": "No Twilio phone number found",
+                "setup_required": {
+                    "action": "Purchase a phone number in your Twilio console",
+                    "url": "https://console.twilio.com/us1/develop/phone-numbers/manage/incoming"
+                }
+            }
+        
+        from_number = phone_numbers[0].phone_number
+        
+        # Format phone number
+        to_number = body.to_number
+        if not to_number.startswith('+'):
+            if to_number.startswith('1'):
+                to_number = '+' + to_number
+            else:
+                to_number = '+1' + to_number
+        
+        # Send test message
+        message = client.messages.create(
+            body=body.message,
+            from_=from_number,
+            to=to_number
+        )
+        
+        return {
+            "success": True,
+            "message_sid": message.sid,
+            "status": message.status,
+            "to": message.to,
+            "from": message.from_,
+            "body": message.body,
+            "sent_at": datetime.now().isoformat(),
+            "twilio_account": account_sid[:8] + "..."
+        }
+        
+    except ImportError:
+        return {
+            "success": False,
+            "error": "Twilio SDK not installed",
+            "setup_required": {
+                "action": "Install Twilio SDK",
+                "command": "pip install twilio>=9.0.0"
+            }
+        }
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"SMS sending failed: {str(e)}",
+            "debug_info": {
+                "account_sid": account_sid[:8] + "..." if account_sid else "missing",
+                "to_number": to_number,
+                "from_number": from_number if 'from_number' in locals() else "unknown"
+            }
+        }
+
 # --- Static UI mount (after API routes) ---
 from fastapi.responses import RedirectResponse
 

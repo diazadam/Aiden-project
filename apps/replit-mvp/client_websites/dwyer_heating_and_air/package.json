@@ -1,0 +1,10 @@
+{
+  "name": "dwyer-heating-and-air",
+  "version": "1.0.0",
+  "description": "Website for Dwyer Heating and Air",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -s .",
+    "build": "echo 'No build step needed'"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "tony's-pizza",
+  "version": "1.0.0",
+  "description": "Website for Tony's Pizza",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -s .",
+    "build": "echo 'No build step needed'"
+  }
+}

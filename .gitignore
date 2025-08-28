@@ -1,0 +1,15 @@
+.venv*
+.env.local
+__pycache__/
+*.pyc
+*.log
+.DS_Store
+*_artifacts/
+_archive/
+*.wav
+*.mp3
+memory.json
+logs/
+memory_db/
+venv/
+.cursor-tutor

@@ -9,6 +9,64 @@
 
 ## Session Log (append new entries below)
 
+### 2025-08-28 Replit MVP Control Tower Complete
+- **Branch:** master  
+- **What I did:**
+  - Built complete Replit MVP web dashboard with FastAPI backend and modern React-style UI
+  - Implemented natural language → TaskCard conversion using OpenAI GPT-4o-mini/Anthropic Claude
+  - Created PIN-protected task dispatch system with n8n webhook integration
+  - Added comprehensive web interface with real-time chat, TaskCard preview, and approval workflow
+  - Fixed FastAPI routing with proper separation (/api/* for backend, /app/* for frontend)
+  - Added CORS middleware and static file serving with root redirect
+  - Created complete Replit deployment configuration (.replit, replit.nix, requirements.txt)
+  - Built project export functionality for ZIP download of complete codebase
+- **Why:** User requested end-to-end Replit MVP for AI task orchestration with web dashboard
+- **Artifacts/Paths:**
+  - apps/replit-mvp/main.py - FastAPI server with LLM integration and n8n dispatch
+  - apps/replit-mvp/public/index.html - Modern web dashboard with dark theme
+  - apps/replit-mvp/requirements.txt - Python dependencies for Replit deployment
+  - apps/replit-mvp/.replit + replit.nix - Replit deployment configuration
+  - apps/replit-mvp/.env.example - Environment template with all required variables
+  - apps/replit-mvp/README.md - Complete setup and usage documentation
+- **Tested & Verified:**
+  - Health endpoint (/api/health) returns provider status ✅
+  - Static serving (/app/) with root redirect working ✅
+  - CORS enabled for cross-origin requests ✅
+  - Route separation prevents API/static conflicts ✅
+  - Environment loading from project root .env.local ✅
+- **Open questions:**
+  - Ready to deploy to Replit for live testing with n8n integration?
+  - Should we set up actual n8n instance for end-to-end workflow testing?
+- **Next steps:**
+  - Deploy to Replit and test live TaskCard generation/dispatch
+  - Connect with actual n8n instance for complete automation workflow
+  - Consider adding authentication/user management for multi-tenant use
+
+### 2025-08-28 Cloud Integration Added
+- **Branch:** master  
+- **What I did:**
+  - Built comprehensive Supabase client for server-side operations (tasks, conversations, bookings, kb_chunks)
+  - Created GCS client with automatic service account materialization from base64
+  - Extended host executor allowlist with 6 GCP commands (gcloud auth, run deploy, cloud build, gcs upload/download/list)
+  - Added Google Cloud dependencies (storage 2.18.2, pubsub 2.31.1)
+  - Updated environment variables for Supabase + GCP integration
+  - Enhanced doctor script to check cloud service configurations
+  - Created Supabase schema with proper indexes for performance
+- **Why:** Enable Aiden/Jarvis cloud deployment, storage, and data persistence capabilities
+- **Artifacts/Paths:**
+  - libs/shared/supabase_client.py - Server-side Supabase REST client
+  - libs/shared/gcs_client.py - Google Cloud Storage operations
+  - ops/supabase_schema.sql - Database schema for tables
+  - .env.local - Updated with GCP_PROJECT_ID and other cloud vars
+  - Host executor now has 28 total commands (22 + 6 GCP)
+- **Open questions:**
+  - Ready to set up actual GCP service account for testing?
+  - Should we create the Supabase tables or wait for production use?
+- **Next steps:**
+  - Test end-to-end: voice command → host executor → GCS upload
+  - Wire cloud logging into terminal agent
+  - Set up actual deployment pipeline for Cloud Run
+
 ### 2025-08-28 Host Bridge Added
 - **Branch:** master
 - **What I did:**
@@ -58,3 +116,77 @@
   - Test voice mode with ElevenLabs
   - Consider adding host executor for local commands
   - Set up any missing integrations from old projects
+
+### 2025-08-28 n8n dispatcher + Control Tower alignment (Twilio later tonight)
+- **Branch:** master  
+- **What I did / current status:**
+  - Control Tower (`apps/replit-mvp/main.py`) now wraps TaskCard under `body` and sends `X-Aiden-Token` to n8n.
+  - Conversation memory persists to Supabase (`users.full_name` JSON) and is recalled in `/api/chat`.
+  - Aiden Superintelligence path wired: if `business_name` + `industry` are provided, routes to specialized assistant.
+  - n8n workflow in repo: `ops/n8n/aiden_sms_dispatcher.json` (Twilio node can stay disabled until creds are added).
+- **Why:** Token-gated webhook + correct payload shape for reliable Control Tower → n8n dispatch; keep Twilio optional until configured.
+- **Key code (already in place):**
+```python
+async def dispatch_to_n8n(card: TaskCard) -> tuple[int, str]:
+    if not (N8N_URL and N8N_TOKEN):
+        raise HTTPException(500, "N8N_URL or N8N_TOKEN missing")
+    payload = {"body": json.loads(card.model_dump_json())}
+    async with httpx.AsyncClient(timeout=20) as client:
+        r = await client.post(
+            f"{N8N_URL.rstrip('/')}/webhook/aiden-task",
+            headers={"X-Aiden-Token": N8N_TOKEN, "Content-Type": "application/json"},
+            json=payload,
+        )
+    return r.status_code, r.text[:1000]
+```
+- **Import + activate workflows via API:**
+```bash
+export N8N_URL=http://localhost:5678
+export N8N_USER=admin
+export N8N_PASS=admin123
+
+# Aiden SMS Dispatcher
+DISP_ID=$(curl -s -u "$N8N_USER:$N8N_PASS" -H "Content-Type: application/json" \
+  --data-binary @/Users/adammach/aiden-project/ops/n8n/aiden_sms_dispatcher.json \
+  "$N8N_URL/rest/workflows" | python3 -c 'import sys,json;print(json.load(sys.stdin)["id"])')
+curl -s -u "$N8N_USER:$N8N_PASS" -X PATCH -H "Content-Type: application/json" \
+  --data '{"active":true}' "$N8N_URL/rest/workflows/$DISP_ID"
+
+# (Optional) Incoming SMS Handler
+INC_ID=$(curl -s -u "$N8N_USER:$N8N_PASS" -H "Content-Type: application/json" \
+  --data-binary @/Users/adammach/aiden-project/ops/n8n/incoming_sms_handler.json \
+  "$N8N_URL/rest/workflows" | python3 -c 'import sys,json;print(json.load(sys.stdin)["id"])')
+curl -s -u "$N8N_USER:$N8N_PASS" -X PATCH -H "Content-Type: application/json" \
+  --data '{"active":true}' "$N8N_URL/rest/workflows/$INC_ID"
+```
+- **Token gate (required):** Set `N8N_TOKEN` in n8n env and in `.env.local` (Control Tower uses it via `X-Aiden-Token`).
+- **Dry-run (before Twilio):** In n8n, disable the Twilio "Send SMS" node and connect the success response so webhook returns 200 without sending.
+- **Smoke tests:**
+```bash
+# Direct to n8n
+curl -s -X POST "$N8N_URL/webhook/aiden-task" \
+  -H "X-Aiden-Token: $N8N_TOKEN" -H "Content-Type: application/json" \
+  -d '{"body":{"type":"send_sms","params":{"to":"+1TEST","body":"Dry run"}}}'
+
+# Control Tower → n8n
+curl -s -X POST http://127.0.0.1:8000/api/task \
+  -H "Content-Type: application/json" \
+  -d '{"taskcard":{"type":"send_sms","account_id":"ATOUCHOFHOPE","params":{"to":"+1TEST","body":"Dry run from Control Tower"}}}'
+```
+- **Supabase note:** Ensure `.env.local` has the active `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`; memory then sticks across chats.
+- **Port fix:** `lsof -ti tcp:8000 | xargs kill -9; make run-ctl`
+- **Tonight (Twilio):** Add `twilio_main` credentials in n8n + set `TWILIO_FROM`, re-enable Twilio node, re-test the webhook.
+
+### Jarvis Next — Phased plan (carry-forward)
+- **Phase 1 — Bring automation online (today):**
+  - Run n8n locally (Docker or native), set `N8N_TOKEN`, import/activate "Aiden Dispatcher".
+  - Control Tower env: `N8N_URL=http://localhost:5678`, `N8N_TOKEN=<same>`; smoke test dispatcher.
+- **Phase 2 — Memory (conversation persistence):**
+  - Use Supabase `users.full_name` JSON for last 20 messages; verify recall in UI.
+- **Phase 3 — Voice + Host bridge:**
+  - Terminal agent voice fallback to macOS `say`; `!host run "<command>"` bridged to `apps/host/host.py` with PIN.
+- **Phase 4 — First client preset (A Touch of Hope):**
+  - Seed `accounts` + `kb_chunks`; add n8n FAQ + booking branches.
+- **Phase 5 — Tests (must pass):**
+  - n8n `/rest/ping` (or root), dispatcher active; Control Tower `/api/task` → n8n execution; memory persists; host commands work; voice fallback works.
+- **Stretch:** `/api/n8n/sync` endpoint to install/upgrade dispatcher; re-enable `/api/task` PIN for prod.

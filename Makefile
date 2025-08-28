@@ -17,6 +17,9 @@ run-chat:
 run-voice:
 	cd apps/terminal && ../../$(RUN) aiden_pro.py --voice
 
+run-ctl:
+	cd apps/replit-mvp && ../../$(RUN) -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
 host-list:
 	$(RUN) apps/host/host.py list
 

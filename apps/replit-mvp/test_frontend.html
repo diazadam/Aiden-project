@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Aiden Website Builder</title>
+</head>
+<body>
+    <h1>Test Aiden Website Builder</h1>
+    <button id="test-website-btn">Test Website Creation</button>
+    
+    <div id="result"></div>
+    
+    <script>
+        document.getElementById('test-website-btn').addEventListener('click', async function() {
+            console.log('🧪 Testing website creation...');
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>⏳ Creating website...</p>';
+            
+            try {
+                const response = await fetch('/api/create-website', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        business_name: "Test Website Business",
+                        industry: "technology",
+                        type: "landing_page",
+                        style: "modern",
+                        features: ["contact_form"],
+                        include_blog: false,
+                        domain: "testsite.com",
+                        account_id: "test_user"
+                    })
+                });
+                
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('Response data:', result);
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `<h3>✅ Success!</h3><p>${result.result.substring(0, 500)}...</p>`;
+                } else {
+                    resultDiv.innerHTML = `<h3>❌ Error</h3><p>${result.error || 'Unknown error'}</p>`;
+                }
+                
+            } catch (error) {
+                console.error('Test error:', error);
+                resultDiv.innerHTML = `<h3>❌ Test Error</h3><p>${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

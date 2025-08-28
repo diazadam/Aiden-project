@@ -1,0 +1,10 @@
+{
+  "name": "test-client",
+  "version": "1.0.0",
+  "description": "Website for Test Client",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -s .",
+    "build": "echo 'No build step needed'"
+  }
+}

@@ -39,7 +39,14 @@ Record any irreversible choices here (versions, libraries, structure, providers)
 
 ## Host Executor
 - PIN: 2188 (in .env.local as AIDEN_PIN)
-- Allowlist: apps/host/allowlist.yaml (22 commands)
+- Allowlist: apps/host/allowlist.yaml (28 commands: 22 local + 6 GCP)
 - Logging: logs/host_executor.log (execution audit trail)
 - Security: Explicit allowlist + PIN gate + parameter validation
 - Pattern: Template system with {placeholder} runtime parameters
+
+## Cloud Integration
+- Supabase: Server-side REST client with service role key
+- GCS: Automatic service account handling (file or base64)
+- Tables: tasks, conversations, bookings, kb_chunks (see ops/supabase_schema.sql)
+- Security: Service role for server contexts only, never browser
+- Dependencies: google-cloud-storage 2.18.2, google-cloud-pubsub 2.31.1

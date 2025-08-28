@@ -1,0 +1,37 @@
+# Host Executor Allowlist - Commands Aiden/Jarvis can run with PIN protection
+# Format: "command_name": "shell_command_template"
+# Use {placeholder} for runtime parameters
+
+# Applications
+"open vscode":    "open -a 'Visual Studio Code' {path}"
+"open cursor":    "open -a 'Cursor' {path}" 
+"open finder":    "open {path}"
+"open safari":    "open -a 'Safari' {url}"
+
+# Git operations
+"git clone":      "bash -lc 'git clone \"{repo}\" \"{dest}\"'"
+"git pull":       "bash -lc 'git -C \"{repo_dir}\" pull'"
+"git status":     "bash -lc 'git -C \"{repo_dir}\" status'"
+"git add":        "bash -lc 'git -C \"{repo_dir}\" add .'"
+"git commit":     "bash -lc 'git -C \"{repo_dir}\" commit -m \"{message}\"'"
+
+# Development workflows  
+"npm dev":        "bash -lc 'cd \"{path}\" && npm install && npm run dev'"
+"npm install":    "bash -lc 'cd \"{path}\" && npm install'"
+"python script":  "bash -lc 'cd \"{path}\" && . .venv/bin/activate 2>/dev/null || true && python \"{script}\"'"
+"python run":     "bash -lc 'cd \"{path}\" && . .venv/bin/activate 2>/dev/null || true && python -m {module}'"
+
+# File operations
+"create dir":     "mkdir -p \"{path}\""
+"list files":     "ls -la \"{path}\""
+"copy file":      "cp \"{source}\" \"{dest}\""
+"move file":      "mv \"{source}\" \"{dest}\""
+
+# System
+"kill process":   "pkill -f \"{pattern}\""
+"show processes": "ps aux | grep \"{pattern}\" | grep -v grep"
+
+# Aiden-specific
+"aiden chat":     "bash -lc 'cd ~/aiden-project && make run-chat'"
+"aiden voice":    "bash -lc 'cd ~/aiden-project && make run-voice'"
+"aiden doctor":   "bash -lc 'cd ~/aiden-project && make doctor'"

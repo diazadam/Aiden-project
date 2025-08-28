@@ -17,5 +17,8 @@ run-chat:
 run-voice:
 	cd apps/terminal && ../../$(RUN) aiden_pro.py --voice
 
+host-list:
+	$(RUN) apps/host/host.py list
+
 clean:
 	rm -rf $(VENV) __pycache__ *.pyc

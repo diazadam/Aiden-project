@@ -11,7 +11,15 @@ import json
 import subprocess
 import time
 from pathlib import Path
-from google.cloud import run_v2
+try:
+    from google.cloud import run_v2
+    from google.cloud.run_v2 import ServicesClient, CreateServiceRequest, UpdateServiceRequest, Service
+    CLOUD_RUN_AVAILABLE = True
+except ImportError:
+    # Fallback - use REST API directly
+    CLOUD_RUN_AVAILABLE = False
+    import requests
+
 from google.cloud import artifactregistry_v1
 from skills.contracts import Skill, SkillInputs, SkillOutputs, SkillContext
 

@@ -9,6 +9,7 @@ from typing import Optional, List, Dict, Any
 import os
 import hashlib
 import json
+import time
 from google.cloud import bigquery
 from skills.contracts import Skill, SkillInputs, SkillOutputs, SkillContext
 
@@ -135,7 +136,7 @@ class SkillImpl(Skill):
             
             artifacts = {
                 "bigquery_job_id": query_job.job_id,
-                "cost_saved_vs_estimate": max(0, estimated_cost - actual_cost)
+                "cost_saved_vs_estimate": f"${max(0, estimated_cost - actual_cost):.4f}"
             }
             
             return Outputs(

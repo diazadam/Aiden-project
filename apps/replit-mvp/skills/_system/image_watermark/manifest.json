@@ -1,0 +1,6 @@
+{
+  "name": "image_watermark",
+  "version": "0.1.0",
+  "caps": ["fs_write"],
+  "description": "Add a simple text watermark to a PNG and save to tenant workdir."
+}

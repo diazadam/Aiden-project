@@ -104,7 +104,29 @@ make run-voice   # press Enter to speak
 
 ## 📋 Recent Enhancements
 
-### **Version 2.0 - Enhanced Intelligence (Latest)**
+### **Version 3.0 - Self-Expanding Skills (Latest - Phase 2)**
+- 🧠 **Dynamic Skill Learning** - Aiden can now learn new skills on the fly
+- 🔐 **Governance Pipeline** - Propose → Validate → Approve → Execute workflow
+- 🛡️ **Capability-Based Security** - PIN-gated permissions for dangerous operations
+- 📦 **Sandboxed Execution** - Safe skill runtime with resource limits
+- 🔌 **Typed Connectors** - Retry/timeout/cost tracking for external APIs
+- 📊 **Skills Registry** - Hot-loadable skills with versioning and metadata
+- 🎯 **Seed Skills** - Built-in web_fetch and image_watermark capabilities
+
+#### **The 4-Step Self-Learning Flow:**
+1. **Propose** - Generate new skill code + tests with LLM assistance
+2. **Validate** - Run tests in sandbox environment with safety checks
+3. **Approve** - Require PIN for dangerous capabilities (fs_write, exec, net, system)
+4. **Execute** - Deploy to skills registry and use immediately
+
+#### **API Endpoints:**
+- `GET /api/skills` - List all available skills
+- `POST /api/skills/propose` - Submit new skill for review
+- `POST /api/skills/validate` - Test a pending skill
+- `POST /api/skills/approve` - Approve and activate skill (PIN required)
+- `POST /api/skills/run` - Execute any registered skill
+
+### **Version 2.0 - Enhanced Intelligence**
 - 🔄 Replaced consultative responses with action-oriented execution
 - 🌐 Real website creation and deployment capability
 - ☁️ Google Cloud Storage integration
@@ -131,10 +153,17 @@ The transformation from consultative to execution-focused AI can be tested by co
 
 ## 📝 Available Commands
 
+### **Core Commands:**
 - `make setup` — Create Python 3.11 venv & install deps
-- `make doctor` — Test configuration
+- `make doctor` — Test configuration and API keys
+- `make run-ctl` — Start Enhanced Aiden web server (port 8001)
 - `make run-chat` — Start terminal chat mode
 - `make run-voice` — Start voice mode (press Enter to speak)
+
+### **Phase 2: Skills System:**
+- `make skills-test` — Run skills system tests
+- `make connectors-smoke` — Test API connector integrations
+- `make sandbox-reset` — Clear tenant working directories
 
 ## ⚙️ Configuration
 

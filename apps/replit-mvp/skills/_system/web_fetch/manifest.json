@@ -1,0 +1,6 @@
+{
+  "name": "web_fetch",
+  "version": "0.1.0",
+  "caps": ["net"],
+  "description": "Fetch a URL and extract title + first H1 + up to 3 image alts."
+}

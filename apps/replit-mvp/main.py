@@ -1,10 +1,10 @@
-import os, io, json, zipfile, fnmatch
+import os, io, json, zipfile, fnmatch, shutil, hashlib
 from typing import Optional, Literal, List, Dict, Any
 from pathlib import Path
 from datetime import datetime
 
 import httpx
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, APIRouter
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, ValidationError
@@ -12,6 +12,11 @@ from dotenv import load_dotenv
 
 # Import enhanced superintelligence
 from superintelligence import AIDEN_SUPERINTELLIGENCE_ENHANCED, AIDEN_SUPERINTELLIGENCE
+
+# Import skills system
+from skills.registry import REGISTRY, Manifest, APPROVED_DIR, PENDING_DIR, AUDIT_LOG
+from skills.runtime import run_skill
+from security.policies import SECRET_PIN, CapsPolicy
 
 # ---- Setup & Config ----
 ROOT = Path(__file__).parent
@@ -107,6 +112,12 @@ async def sb_recent_messages(account_id:str, limit:int=20):
         return []
 
 app = FastAPI(title=APP_NAME)
+
+# Load skills registry at startup
+@app.on_event("startup")
+async def _load_skills():
+    REGISTRY.load_all()
+    print("[skills] loaded:", REGISTRY.list())
 
 # Add CORS middleware
 from fastapi.middleware.cors import CORSMiddleware
@@ -283,6 +294,132 @@ async def dispatch_to_n8n(card: TaskCard) -> tuple[int, str]:
     return r.status_code, r.text[:1000]
 
 # ---- Routes ----
+
+# ---- Skills System Routes ----
+class ProposeBody(BaseModel):
+    name: str
+    description: str = ""
+    version: str = "0.1.0"
+    caps: List[str] = []
+    code: str
+    tests: Optional[str] = None
+
+@app.get("/api/skills")
+def list_skills():
+    """List all available skills with their metadata"""
+    return {"skills": REGISTRY.list()}
+
+@app.post("/api/skills/propose")
+def propose_skill(body: ProposeBody, account_id: str = "local"):
+    """Propose a new skill for validation and approval"""
+    # Write to pending directory
+    skill_dir = os.path.join(PENDING_DIR, body.name)
+    if os.path.exists(skill_dir):
+        shutil.rmtree(skill_dir)
+    os.makedirs(skill_dir, exist_ok=True)
+    
+    # Save skill code
+    code_path = os.path.join(skill_dir, "skill.py")
+    with open(code_path, "w") as f:
+        f.write(body.code)
+    
+    # Generate checksum and manifest
+    checksum = hashlib.sha256(body.code.encode()).hexdigest()
+    manifest = Manifest(
+        name=body.name, 
+        version=body.version, 
+        caps=body.caps, 
+        description=body.description, 
+        checksum=checksum
+    )
+    
+    with open(os.path.join(skill_dir, "manifest.json"), "w") as f:
+        f.write(manifest.model_dump_json(indent=2))
+    
+    # Save tests if provided
+    if body.tests:
+        tests_dir = os.path.join(skill_dir, "tests")
+        os.makedirs(tests_dir, exist_ok=True)
+        with open(os.path.join(tests_dir, f"test_{body.name}.py"), "w") as f:
+            f.write(body.tests)
+    
+    # Log proposal
+    with open(AUDIT_LOG, "a") as log:
+        log.write(json.dumps({
+            "event": "propose",
+            "name": body.name,
+            "by": account_id,
+            "timestamp": datetime.now().isoformat()
+        }) + "\n")
+    
+    return {"ok": True, "pending_path": skill_dir}
+
+class ValidateBody(BaseModel):
+    name: str
+
+@app.post("/api/skills/validate")
+def validate_skill(body: ValidateBody):
+    """Validate a pending skill (basic checks for Phase 2 v1)"""
+    pending = os.path.join(PENDING_DIR, body.name)
+    if not os.path.isdir(pending):
+        raise HTTPException(404, "pending skill not found")
+    
+    manifest_json = os.path.join(pending, "manifest.json")
+    code_py = os.path.join(pending, "skill.py")
+    
+    if not (os.path.exists(manifest_json) and os.path.exists(code_py)):
+        raise HTTPException(400, "manifest or code missing")
+    
+    return {"ok": True, "message": "basic validation passed (Phase 2 v1)"}
+
+class ApproveBody(BaseModel):
+    name: str
+    pin: str
+
+@app.post("/api/skills/approve")
+def approve_skill(body: ApproveBody, account_id: str = "local"):
+    """Approve a pending skill (requires PIN for dangerous capabilities)"""
+    if body.pin != SECRET_PIN:
+        raise HTTPException(401, "invalid pin")
+    
+    pending = os.path.join(PENDING_DIR, body.name)
+    if not os.path.isdir(pending):
+        raise HTTPException(404, "pending skill not found")
+    
+    approved = os.path.join(APPROVED_DIR, body.name)
+    if os.path.exists(approved):
+        shutil.rmtree(approved)
+    
+    shutil.copytree(pending, approved)
+    
+    # Refresh registry
+    REGISTRY.load_all()
+    
+    # Log approval
+    with open(AUDIT_LOG, "a") as log:
+        log.write(json.dumps({
+            "event": "approve",
+            "name": body.name,
+            "by": account_id,
+            "timestamp": datetime.now().isoformat()
+        }) + "\n")
+    
+    return {"ok": True, "message": f"approved {body.name}", "skills": REGISTRY.list()}
+
+class RunSkillBody(BaseModel):
+    name: str
+    args: Dict[str, Any] = {}
+    pin: Optional[str] = None
+    account_id: str = "local"
+
+@app.post("/api/skills/run")
+def run_skill_endpoint(body: RunSkillBody):
+    """Execute a skill with given parameters"""
+    token = body.pin if body.pin else None
+    result = run_skill(body.name, body.account_id, body.args, caps_token=token)
+    return result.model_dump()
+
+# ---- Core API Routes ----
 @app.get("/api/health")
 def health():
     return {"ok": True, "app": APP_NAME, "provider": PROVIDER}

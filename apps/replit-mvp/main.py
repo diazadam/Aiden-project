@@ -16,6 +16,7 @@ from superintelligence import AIDEN_SUPERINTELLIGENCE_ENHANCED, AIDEN_SUPERINTEL
 # Import skills system
 from skills.registry import REGISTRY, Manifest, APPROVED_DIR, PENDING_DIR, AUDIT_LOG
 from skills.runtime import run_skill
+from skills.validate_pending import validate_pending_skill
 from security.policies import SECRET_PIN, CapsPolicy
 
 # ---- Setup & Config ----
@@ -359,18 +360,11 @@ class ValidateBody(BaseModel):
 
 @app.post("/api/skills/validate")
 def validate_skill(body: ValidateBody):
-    """Validate a pending skill (basic checks for Phase 2 v1)"""
-    pending = os.path.join(PENDING_DIR, body.name)
-    if not os.path.isdir(pending):
-        raise HTTPException(404, "pending skill not found")
-    
-    manifest_json = os.path.join(pending, "manifest.json")
-    code_py = os.path.join(pending, "skill.py")
-    
-    if not (os.path.exists(manifest_json) and os.path.exists(code_py)):
-        raise HTTPException(400, "manifest or code missing")
-    
-    return {"ok": True, "message": "basic validation passed (Phase 2 v1)"}
+    """Validate a pending skill using subprocess isolation and testing"""
+    res = validate_pending_skill(body.name)
+    if not res.get("ok"):
+        raise HTTPException(400, json.dumps(res))
+    return res
 
 class ApproveBody(BaseModel):
     name: str

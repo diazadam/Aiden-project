@@ -1,0 +1,1 @@
+# Sandboxed skills directory for validation testing

@@ -1,0 +1,6 @@
+{
+  "name": "browser",
+  "version": "0.1.0",
+  "caps": ["net"],
+  "description": "Open a page, optionally extract simple content, and return a screenshot artifact."
+}

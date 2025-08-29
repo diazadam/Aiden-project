@@ -9,7 +9,7 @@ setup:
 	$(RUN) -m pip install -r requirements.txt
 
 doctor:
-	bash scripts/doctor.sh
+	$(RUN) doctor.py
 
 run-chat:
 	cd apps/terminal && ../../$(RUN) aiden_pro.py --chat

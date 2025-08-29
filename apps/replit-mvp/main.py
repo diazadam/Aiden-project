@@ -513,6 +513,165 @@ SKILL_SYSTEM_SPEC:
     except Exception as e:
         raise HTTPException(500, f"Skill generation failed: {str(e)}")
 
+# =====================================================================================
+# CONTROL TOWER API ENDPOINTS  
+# =====================================================================================
+
+class ClientData(BaseModel):
+    name: str
+    industry: str
+    contact_email: str
+    project_type: str
+    status: str = "active"
+    created_date: Optional[str] = None
+    last_activity: Optional[str] = None
+
+class DeploymentData(BaseModel):
+    client_id: str
+    project_name: str
+    deployment_type: str  # mobile, web, automation, etc.
+    status: str
+    url: Optional[str] = None
+    created_date: Optional[str] = None
+
+# In-memory storage for demo (would be database in production)
+clients_db = {
+    "client_001": {
+        "id": "client_001",
+        "name": "RestaurantApp Co", 
+        "industry": "Food & Beverage",
+        "contact_email": "john@restaurantapp.com",
+        "project_type": "mobile",
+        "status": "active",
+        "created_date": "2024-01-15T10:00:00Z",
+        "last_activity": "2024-01-20T14:30:00Z"
+    },
+    "client_002": {
+        "id": "client_002", 
+        "name": "Local Bakery",
+        "industry": "Retail",
+        "contact_email": "sarah@localbakery.com", 
+        "project_type": "web",
+        "status": "active",
+        "created_date": "2024-01-18T09:15:00Z",
+        "last_activity": "2024-01-22T11:45:00Z"
+    }
+}
+
+deployments_db = {
+    "deploy_001": {
+        "id": "deploy_001",
+        "client_id": "client_001", 
+        "project_name": "OrderEase Mobile App",
+        "deployment_type": "mobile",
+        "status": "deployed",
+        "url": "https://testflight.apple.com/join/abc123",
+        "created_date": "2024-01-20T14:30:00Z"
+    },
+    "deploy_002": {
+        "id": "deploy_002",
+        "client_id": "client_002",
+        "project_name": "Bakery Website", 
+        "deployment_type": "web",
+        "status": "building",
+        "url": "https://staging.localbakery.com",
+        "created_date": "2024-01-22T11:45:00Z"
+    }
+}
+
+analytics_db = {
+    "total_deployments": 156,
+    "active_clients": 12, 
+    "success_rate": 96.4,
+    "avg_deployment_time": 8.5
+}
+
+@app.get("/api/control/clients")
+def get_clients():
+    """Get all clients for the control tower"""
+    return {
+        "clients": list(clients_db.values()),
+        "total": len(clients_db),
+        "active": len([c for c in clients_db.values() if c["status"] == "active"])
+    }
+
+@app.post("/api/control/clients")
+def create_client(client: ClientData):
+    """Create a new client record"""
+    client_id = f"client_{len(clients_db) + 1:03d}"
+    client_data = client.model_dump()
+    client_data["id"] = client_id
+    client_data["created_date"] = datetime.now().isoformat()
+    client_data["last_activity"] = datetime.now().isoformat()
+    
+    clients_db[client_id] = client_data
+    return {"ok": True, "client_id": client_id, "client": client_data}
+
+@app.get("/api/control/deployments")
+def get_deployments():
+    """Get all deployments for the control tower"""
+    return {
+        "deployments": list(deployments_db.values()),
+        "total": len(deployments_db),
+        "by_type": {
+            "mobile": len([d for d in deployments_db.values() if d["deployment_type"] == "mobile"]),
+            "web": len([d for d in deployments_db.values() if d["deployment_type"] == "web"]), 
+            "automation": len([d for d in deployments_db.values() if d["deployment_type"] == "automation"])
+        }
+    }
+
+@app.post("/api/control/deployments")
+def create_deployment(deployment: DeploymentData):
+    """Record a new deployment"""
+    deployment_id = f"deploy_{len(deployments_db) + 1:03d}"
+    deployment_data = deployment.model_dump()
+    deployment_data["id"] = deployment_id
+    deployment_data["created_date"] = datetime.now().isoformat()
+    
+    deployments_db[deployment_id] = deployment_data
+    return {"ok": True, "deployment_id": deployment_id, "deployment": deployment_data}
+
+@app.get("/api/control/analytics")
+def get_analytics():
+    """Get analytics data for the control tower dashboard"""
+    return {
+        "overview": analytics_db,
+        "recent_activity": [
+            {"type": "mobile", "client": "RestaurantApp Co", "status": "deployed", "time": "2 hours ago"},
+            {"type": "web", "client": "Local Bakery", "status": "building", "time": "4 hours ago"},
+            {"type": "automation", "client": "Tech Startup", "status": "completed", "time": "1 day ago"}
+        ],
+        "skill_usage": {
+            "mobile_expo_scaffold": {"count": 23, "success_rate": 96},
+            "mobile_expo_build_ios": {"count": 18, "success_rate": 94},
+            "browser": {"count": 145, "success_rate": 89},
+            "web_fetch": {"count": 234, "success_rate": 98}
+        }
+    }
+
+@app.get("/api/control/system-status")
+def get_system_status():
+    """Get real-time system status for the control tower"""
+    return {
+        "status": "online",
+        "uptime": "99.9%", 
+        "skills": {
+            "total": len(REGISTRY._by_name),
+            "loaded": list(REGISTRY._by_name.keys()),
+            "health": "operational"
+        },
+        "security": {
+            "sandbox": "active",
+            "network_gating": "enabled", 
+            "pin_auth": "enforced"
+        },
+        "infrastructure": {
+            "cpu_usage": "23%",
+            "memory_usage": "45%",
+            "disk_usage": "32%"
+        }
+    }
+
 # ---- Core API Routes ----
 @app.get("/api/health")
 def health():

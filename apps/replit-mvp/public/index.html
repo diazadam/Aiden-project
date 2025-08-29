@@ -3,26 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aiden AI - Your Personal AI Assistant</title>
+  <title>Aiden AI Control Tower - Deploy Intelligence</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #0f0f0f;
-      --bg-secondary: #1a1a1a;
-      --bg-tertiary: #2d2d2d;
-      --bg-input: #40414f;
-      --bg-user: #343541;
-      --bg-assistant: #444654;
-      --border-color: #565869;
-      --text-primary: #d1d5db;
-      --text-secondary: #9ca3af;
-      --text-muted: #6b7280;
-      --accent-blue: #19c37d;
-      --accent-hover: #16a34a;
-      --danger: #ef4444;
-      --warning: #f59e0b;
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-tertiary: #1f1f1f;
+      --bg-quaternary: #2a2a2a;
+      --bg-card: #161616;
+      --bg-input: #1a1a1a;
+      --bg-hover: #252525;
+      --border-color: #333333;
+      --border-accent: #404040;
+      --text-primary: #ffffff;
+      --text-secondary: #b4b4b4;
+      --text-muted: #6b6b6b;
+      --accent-primary: #00d4ff;
+      --accent-secondary: #ff6b35;
+      --accent-success: #00ff88;
+      --accent-warning: #ffaa00;
+      --accent-danger: #ff4444;
+      --gradient-primary: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+      --gradient-secondary: linear-gradient(135deg, #ff6b35 0%, #cc5529 100%);
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4);
+      --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.3);
     }
     
     * {
@@ -44,72 +53,149 @@
       height: 100vh;
     }
     
-    /* Sidebar */
+    /* Enhanced Sidebar */
     .sidebar {
-      width: 260px;
+      width: 300px;
       background: var(--bg-secondary);
       display: flex;
       flex-direction: column;
       border-right: 1px solid var(--border-color);
+      box-shadow: var(--shadow-md);
     }
     
     .sidebar-header {
-      padding: 16px;
+      padding: 20px;
       border-bottom: 1px solid var(--border-color);
-    }
-    
-    .new-chat-btn {
-      width: 100%;
-      padding: 12px 16px;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .new-chat-btn:hover {
       background: var(--bg-tertiary);
     }
     
-    .chat-history {
-      flex: 1;
-      overflow-y: auto;
-      padding: 8px;
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
     }
     
-    .chat-item {
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+      box-shadow: var(--shadow-glow);
+    }
+    
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .nav-tabs {
+      display: flex;
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 16px;
+    }
+    
+    .nav-tab {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+    }
+    
+    .nav-tab.active {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 16px;
+    }
+    
+    .nav-section {
+      margin-bottom: 24px;
+    }
+    
+    .nav-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      padding: 0 8px;
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       padding: 12px 16px;
       margin: 2px 0;
       border-radius: 8px;
       cursor: pointer;
       font-size: 14px;
-      transition: background 0.2s ease;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      color: var(--text-secondary);
     }
     
-    .chat-item:hover {
-      background: var(--bg-tertiary);
+    .nav-item:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+      transform: translateX(2px);
     }
     
-    .chat-item.active {
-      background: var(--bg-user);
+    .nav-item.active {
+      background: var(--bg-quaternary);
+      color: var(--accent-primary);
+      border-left: 3px solid var(--accent-primary);
+    }
+    
+    .nav-icon {
+      width: 20px;
+      text-align: center;
+      font-size: 16px;
+    }
+    
+    .nav-badge {
+      background: var(--accent-primary);
+      color: var(--bg-primary);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: auto;
     }
     
     .sidebar-footer {
-      padding: 16px;
+      padding: 16px 20px;
       border-top: 1px solid var(--border-color);
+      background: var(--bg-tertiary);
     }
     
-    .user-info {
+    .user-profile {
       display: flex;
       align-items: center;
       gap: 12px;
@@ -117,107 +203,333 @@
     }
     
     .avatar {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      background: var(--accent-blue);
+      background: var(--gradient-primary);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 16px;
       font-weight: bold;
+      color: white;
     }
     
-    /* Main Chat Area */
+    .profile-info h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    
+    .profile-info p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    
+    /* Main Content Area */
     .main-content {
       flex: 1;
       display: flex;
       flex-direction: column;
+      background: var(--bg-primary);
     }
     
-    .chat-header {
-      padding: 16px 24px;
+    .main-header {
+      padding: 20px 32px;
       background: var(--bg-secondary);
       border-bottom: 1px solid var(--border-color);
       display: flex;
-      justify-content: between;
+      justify-content: space-between;
       align-items: center;
     }
     
-    .model-selector {
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .btn-secondary {
       background: var(--bg-tertiary);
       color: var(--text-primary);
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 14px;
-      cursor: pointer;
     }
     
-    .chat-container {
+    .btn-secondary:hover {
+      background: var(--bg-quaternary);
+      border-color: var(--border-accent);
+    }
+    
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-success);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    /* Content Views */
+    .content-view {
       flex: 1;
       overflow-y: auto;
+      padding: 32px;
+      display: none;
+    }
+    
+    .content-view.active {
+      display: block;
+    }
+    
+    /* Dashboard View */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    
+    .skill-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-primary);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .skill-card:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .skill-card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .skill-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .skill-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+      flex-shrink: 0;
+    }
+    
+    .skill-icon.mobile { background: var(--gradient-primary); }
+    .skill-icon.web { background: var(--gradient-secondary); }
+    .skill-icon.automation { background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%); }
+    .skill-icon.browser { background: linear-gradient(135deg, #ff6b35 0%, #e55a2e 100%); }
+    .skill-icon.ai { background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%); }
+    
+    .skill-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .skill-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    
+    .skill-description {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    
+    .skill-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .skill-metric {
+      text-align: center;
+    }
+    
+    .skill-metric-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent-primary);
+      display: block;
+    }
+    
+    .skill-metric-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    
+    .skill-actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 8px;
+    }
+    
+    .skill-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    
+    .skill-btn-primary {
+      background: var(--accent-primary);
+      color: var(--bg-primary);
+    }
+    
+    .skill-btn-secondary {
+      background: var(--bg-quaternary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+    
+    /* Chat Interface */
+    .chat-view {
       display: flex;
       flex-direction: column;
+      height: 100%;
     }
     
     .messages-container {
       flex: 1;
+      overflow-y: auto;
       padding: 24px 0;
     }
     
     .message {
-      padding: 24px;
+      padding: 20px 32px;
       display: flex;
       gap: 16px;
       align-items: flex-start;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
     }
     
     .message.user {
-      background: var(--bg-user);
+      background: var(--bg-secondary);
     }
     
     .message.assistant {
-      background: var(--bg-assistant);
+      background: var(--bg-tertiary);
     }
     
     .message-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 4px;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 18px;
       flex-shrink: 0;
     }
     
     .user .message-avatar {
-      background: var(--accent-blue);
+      background: var(--gradient-secondary);
       color: white;
     }
     
     .assistant .message-avatar {
-      background: var(--accent-blue);
+      background: var(--gradient-primary);
       color: white;
     }
     
     .message-content {
       flex: 1;
       line-height: 1.6;
-      font-size: 16px;
-    }
-    
-    .message-content h3 {
-      margin-bottom: 8px;
-      color: var(--text-primary);
+      font-size: 15px;
     }
     
     .message-content pre {
       background: var(--bg-primary);
       border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: 8px;
       padding: 16px;
       margin: 12px 0;
       overflow-x: auto;
@@ -225,37 +537,8 @@
       font-family: 'SF Mono', Monaco, monospace;
     }
     
-    .message-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-    
-    .message:hover .message-actions {
-      opacity: 1;
-    }
-    
-    .action-btn {
-      background: none;
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    
-    .action-btn:hover {
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-    }
-    
-    /* Input Area */
     .input-container {
-      padding: 24px;
+      padding: 32px;
       background: var(--bg-secondary);
       border-top: 1px solid var(--border-color);
     }
@@ -267,12 +550,11 @@
     }
     
     .input-form {
-      display: flex;
-      flex-direction: column;
-      background: var(--bg-input);
+      background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
+      box-shadow: var(--shadow-md);
     }
     
     .input-textarea {
@@ -281,11 +563,12 @@
       color: var(--text-primary);
       font-size: 16px;
       font-family: inherit;
-      padding: 16px;
+      padding: 20px;
       resize: none;
       min-height: 24px;
       max-height: 200px;
       outline: none;
+      width: 100%;
     }
     
     .input-textarea::placeholder {
@@ -296,271 +579,391 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 16px;
-      background: var(--bg-input);
-    }
-    
-    .input-actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
+      padding: 12px 20px;
+      background: var(--bg-tertiary);
     }
     
     .send-btn {
-      background: var(--accent-blue);
+      background: var(--gradient-primary);
       color: white;
       border: none;
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s ease;
+      font-size: 18px;
+      transition: all 0.2s ease;
     }
     
     .send-btn:hover:not(:disabled) {
-      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
     }
     
     .send-btn:disabled {
-      background: var(--bg-tertiary);
+      background: var(--bg-quaternary);
       cursor: not-allowed;
     }
     
-    .character-count {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    
     /* Welcome Screen */
-    .welcome-screen {
+    .welcome-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 48px 24px;
-      max-width: 768px;
+      padding: 64px 32px;
+      max-width: 1000px;
       margin: 0 auto;
     }
     
     .welcome-title {
-      font-size: 32px;
-      font-weight: 600;
+      font-size: 48px;
+      font-weight: 800;
       margin-bottom: 16px;
-      background: linear-gradient(135deg, var(--accent-blue) 0%, #10b981 100%);
+      background: var(--gradient-primary);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
     
     .welcome-subtitle {
-      font-size: 18px;
+      font-size: 20px;
       color: var(--text-secondary);
-      margin-bottom: 32px;
-    }
-    
-    .example-prompts {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      width: 100%;
+      margin-bottom: 48px;
       max-width: 600px;
     }
     
-    .example-prompt {
-      background: var(--bg-user);
+    .feature-highlights {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      width: 100%;
+      margin-bottom: 48px;
+    }
+    
+    .feature-card {
+      background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 16px;
-      cursor: pointer;
-      transition: all 0.2s ease;
+      border-radius: 16px;
+      padding: 32px;
       text-align: left;
+      transition: all 0.3s ease;
     }
     
-    .example-prompt:hover {
-      background: var(--bg-assistant);
-      border-color: var(--accent-blue);
+    .feature-card:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--border-accent);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
     }
     
-    .example-prompt-title {
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    
-    .example-prompt-text {
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-    
-    /* Loading Animation */
-    .typing-indicator {
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
-      gap: 4px;
-      padding: 16px 0;
+      justify-content: center;
+      font-size: 28px;
+      color: white;
+      margin-bottom: 16px;
     }
     
-    .typing-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--text-muted);
-      animation: typing 1.4s infinite ease-in-out;
+    .feature-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-primary);
     }
     
-    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-    
-    @keyframes typing {
-      0%, 80%, 100% { transform: scale(1); opacity: 0.5; }
-      40% { transform: scale(1.2); opacity: 1; }
+    .feature-description {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
     }
     
-    /* Mobile Styles */
+    .quick-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .quick-action {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+    
+    .quick-action:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+      transform: translateY(-1px);
+    }
+    
+    /* Responsive Design */
     @media (max-width: 768px) {
       .sidebar {
-        display: none;
+        width: 280px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 1000;
       }
       
-      .message {
-        padding: 16px;
+      .sidebar.open {
+        transform: translateX(0);
       }
       
-      .input-container {
-        padding: 16px;
+      .main-content {
+        width: 100%;
       }
       
-      .welcome-screen {
-        padding: 24px 16px;
+      .main-header {
+        padding: 16px 20px;
+      }
+      
+      .content-view {
+        padding: 20px;
       }
       
       .welcome-title {
-        font-size: 24px;
+        font-size: 36px;
       }
       
-      .example-prompts {
+      .dashboard-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
       }
     }
-    
-    /* Status indicator */
-    .status-indicator {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      padding: 8px 16px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-      z-index: 1000;
+
+    /* Loading States */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
     }
     
-    .status-indicator.online {
-      border-color: var(--accent-blue);
-      color: var(--accent-blue);
+    .loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      margin: -10px 0 0 -10px;
+      border: 2px solid transparent;
+      border-top: 2px solid var(--accent-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
     }
     
-    .status-indicator.offline {
-      border-color: var(--danger);
-      color: var(--danger);
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <div id="status" class="status-indicator">🔄 Connecting...</div>
-  
   <div class="app-container">
-    <!-- Sidebar -->
+    <!-- Enhanced Sidebar -->
     <div class="sidebar">
       <div class="sidebar-header">
-        <button class="new-chat-btn" onclick="startNewChat()">
-          <span>✨</span>
-          New Chat
-        </button>
+        <div class="logo">
+          <div class="logo-icon">🤖</div>
+          <div class="logo-text">Aiden AI</div>
+        </div>
+        
+        <div class="nav-tabs">
+          <button class="nav-tab active" onclick="switchMode('dashboard')">Dashboard</button>
+          <button class="nav-tab" onclick="switchMode('chat')">Chat</button>
+          <button class="nav-tab" onclick="switchMode('clients')">Clients</button>
+        </div>
       </div>
       
-      <div class="chat-history" id="chatHistory">
-        <!-- Chat history items will be added here -->
+      <div class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Core Skills</div>
+          <div class="nav-item active" onclick="selectSkill('dashboard')">
+            <span class="nav-icon">🏠</span>
+            <span>Dashboard</span>
+          </div>
+          <div class="nav-item" onclick="selectSkill('mobile')">
+            <span class="nav-icon">📱</span>
+            <span>Mobile Apps</span>
+            <span class="nav-badge">3</span>
+          </div>
+          <div class="nav-item" onclick="selectSkill('web')">
+            <span class="nav-icon">🌐</span>
+            <span>Web Development</span>
+            <span class="nav-badge">5</span>
+          </div>
+          <div class="nav-item" onclick="selectSkill('automation')">
+            <span class="nav-icon">⚡</span>
+            <span>Automation</span>
+            <span class="nav-badge">8</span>
+          </div>
+        </div>
+        
+        <div class="nav-section">
+          <div class="nav-section-title">Advanced</div>
+          <div class="nav-item" onclick="selectSkill('browser')">
+            <span class="nav-icon">🔍</span>
+            <span>Browser Control</span>
+          </div>
+          <div class="nav-item" onclick="selectSkill('ai')">
+            <span class="nav-icon">🧠</span>
+            <span>AI Agents</span>
+          </div>
+          <div class="nav-item" onclick="selectSkill('deployment')">
+            <span class="nav-icon">🚀</span>
+            <span>Deployment</span>
+          </div>
+          <div class="nav-item" onclick="selectSkill('monitoring')">
+            <span class="nav-icon">📊</span>
+            <span>Monitoring</span>
+          </div>
+        </div>
+        
+        <div class="nav-section">
+          <div class="nav-section-title">Management</div>
+          <div class="nav-item" onclick="selectSkill('clients')">
+            <span class="nav-icon">👥</span>
+            <span>Clients</span>
+            <span class="nav-badge">12</span>
+          </div>
+          <div class="nav-item" onclick="selectSkill('projects')">
+            <span class="nav-icon">📋</span>
+            <span>Projects</span>
+          </div>
+          <div class="nav-item" onclick="selectSkill('analytics')">
+            <span class="nav-icon">📈</span>
+            <span>Analytics</span>
+          </div>
+        </div>
+        
+        <div class="nav-section">
+          <div class="nav-section-title">System</div>
+          <div class="nav-item" onclick="selectSkill('skills')">
+            <span class="nav-icon">🧠</span>
+            <span>Skills Registry</span>
+            <span class="nav-badge" id="skillsCount">6</span>
+          </div>
+          <div class="nav-item" onclick="selectSkill('logs')">
+            <span class="nav-icon">📜</span>
+            <span>System Logs</span>
+          </div>
+        </div>
       </div>
       
       <div class="sidebar-footer">
-        <div class="user-info">
+        <div class="user-profile">
           <div class="avatar">A</div>
-          <div>
-            <div style="font-weight: 500; font-size: 14px;">Aiden AI</div>
-            <div style="font-size: 12px; color: var(--text-muted);">Always ready to help</div>
+          <div class="profile-info">
+            <h4>Aiden Control</h4>
+            <p>Super Administrator</p>
           </div>
         </div>
       </div>
     </div>
     
-    <!-- Main Chat Area -->
+    <!-- Main Content Area -->
     <div class="main-content">
-      <div class="chat-header">
-        <select class="model-selector" id="modelSelector">
-          <option value="aiden-pro">Aiden Pro</option>
-          <option value="aiden-standard">Aiden Standard</option>
-          <option value="aiden-creative">Aiden Creative</option>
-        </select>
-      </div>
-      
-      <div class="chat-container">
-        <div class="messages-container" id="messagesContainer">
-          <!-- Welcome Screen (shown initially) -->
-          <div class="welcome-screen" id="welcomeScreen">
-            <h1 class="welcome-title">🤖 Welcome to Aiden</h1>
-            <p class="welcome-subtitle">Your intelligent AI assistant that actually gets things done</p>
-            
-            <div class="example-prompts">
-              <div class="example-prompt" onclick="useExamplePrompt(this)">
-                <div class="example-prompt-title">🌐 Clone & Deploy</div>
-                <div class="example-prompt-text">Clone any website and deploy it to the cloud</div>
-              </div>
-              
-              <div class="example-prompt" onclick="useExamplePrompt(this)">
-                <div class="example-prompt-title">📱 Build iOS App</div>
-                <div class="example-prompt-text">Create a complete iOS application</div>
-              </div>
-              
-              <div class="example-prompt" onclick="useExamplePrompt(this)">
-                <div class="example-prompt-title">🎬 Create Demo</div>
-                <div class="example-prompt-text">Generate professional demo videos</div>
-              </div>
-              
-              <div class="example-prompt" onclick="useExamplePrompt(this)">
-                <div class="example-prompt-title">⚡ Automate Workflow</div>
-                <div class="example-prompt-text">Set up business automation with n8n</div>
-              </div>
-            </div>
+      <div class="main-header">
+        <div class="page-title" id="pageTitle">Aiden AI Control Tower</div>
+        <div class="header-actions">
+          <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span id="systemStatus">All Systems Online</span>
           </div>
+          <button class="btn btn-secondary" onclick="showSettings()">
+            <span>⚙️</span>
+            Settings
+          </button>
+          <button class="btn btn-primary" onclick="deployNew()">
+            <span>🚀</span>
+            Deploy New
+          </button>
         </div>
       </div>
       
-      <!-- Input Area -->
-      <div class="input-container">
-        <div class="input-wrapper">
-          <div class="input-form">
-            <textarea 
-              id="messageInput" 
-              class="input-textarea" 
-              placeholder="Message Aiden..."
-              rows="1"
-            ></textarea>
-            
-            <div class="input-footer">
-              <div class="input-actions">
-                <button type="button" onclick="attachFile()" title="Attach file">
-                  📎
-                </button>
-              </div>
+      <!-- Dashboard View -->
+      <div class="content-view active" id="dashboardView">
+        <div class="welcome-container" id="welcomeContainer">
+          <h1 class="welcome-title">Deploy Intelligence</h1>
+          <p class="welcome-subtitle">
+            Transform ideas into reality with Aiden's advanced AI capabilities. 
+            From mobile apps to automation workflows - deploy anything, instantly.
+          </p>
+          
+          <div class="feature-highlights">
+            <div class="feature-card">
+              <div class="feature-icon mobile">📱</div>
+              <h3 class="feature-title">Mobile First</h3>
+              <p class="feature-description">
+                Create and deploy iOS apps directly to TestFlight with complete React Native workflows.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon web">🌐</div>
+              <h3 class="feature-title">Web Mastery</h3>
+              <p class="feature-description">
+                Clone, customize, and deploy professional websites with instant cloud hosting.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon automation">⚡</div>
+              <h3 class="feature-title">Smart Automation</h3>
+              <p class="feature-description">
+                Build intelligent workflows with n8n, browser automation, and AI agent deployment.
+              </p>
+            </div>
+          </div>
+          
+          <div class="quick-actions">
+            <button class="quick-action" onclick="quickAction('mobile')">📱 Build iOS App</button>
+            <button class="quick-action" onclick="quickAction('web')">🌐 Clone Website</button>
+            <button class="quick-action" onclick="quickAction('automation')">⚡ Create Workflow</button>
+            <button class="quick-action" onclick="quickAction('chat')">💬 Start Chat</button>
+          </div>
+        </div>
+        
+        <div class="dashboard-grid" id="skillsGrid" style="display: none;">
+          <!-- Skill cards will be populated here -->
+        </div>
+      </div>
+      
+      <!-- Chat View -->
+      <div class="content-view chat-view" id="chatView">
+        <div class="messages-container" id="messagesContainer">
+          <!-- Messages will be added here -->
+        </div>
+        
+        <div class="input-container">
+          <div class="input-wrapper">
+            <div class="input-form">
+              <textarea 
+                id="messageInput" 
+                class="input-textarea" 
+                placeholder="Message Aiden..."
+                rows="1"
+              ></textarea>
               
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <span class="character-count" id="charCount">0</span>
+              <div class="input-footer">
+                <div style="display: flex; gap: 12px; align-items: center;">
+                  <button type="button" onclick="attachFile()" title="Attach file">📎</button>
+                  <span style="font-size: 12px; color: var(--text-muted);" id="charCount">0</span>
+                </div>
+                
                 <button id="sendBtn" class="send-btn" onclick="sendMessage()" disabled>
                   ➤
                 </button>
@@ -569,171 +972,558 @@
           </div>
         </div>
       </div>
+      
+      <!-- Clients View -->
+      <div class="content-view" id="clientsView">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+          <div>
+            <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 8px;">Client Management</h2>
+            <p style="color: var(--text-secondary);">Manage deployments and track client projects</p>
+          </div>
+          <button class="btn btn-primary" onclick="showAddClientModal()">
+            <span>➕</span>
+            Add Client
+          </button>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+          <!-- Clients List -->
+          <div class="clients-section">
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden;">
+              <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-tertiary);">
+                <h3 style="font-size: 18px; font-weight: 600;">Active Clients</h3>
+              </div>
+              <div id="clientsList" style="max-height: 500px; overflow-y: auto;">
+                <!-- Clients will be loaded here -->
+                <div style="padding: 24px; text-align: center; color: var(--text-muted);">
+                  Loading clients...
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Deployment Stats -->
+          <div class="stats-section">
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+              <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">Quick Stats</h3>
+              <div id="clientStats">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <span style="color: var(--text-secondary);">Total Clients</span>
+                  <span style="font-weight: 600; color: var(--accent-primary);">--</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <span style="color: var(--text-secondary);">Active Projects</span>
+                  <span style="font-weight: 600; color: var(--accent-success);">--</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="color: var(--text-secondary);">Success Rate</span>
+                  <span style="font-weight: 600; color: var(--accent-primary);">--</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px;">
+              <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">Recent Activity</h3>
+              <div id="recentActivity">
+                <div style="color: var(--text-muted); font-size: 14px;">Loading activity...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Analytics View -->
+      <div class="content-view" id="analyticsView">
+        <div style="margin-bottom: 32px;">
+          <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 8px;">Analytics Dashboard</h2>
+          <p style="color: var(--text-secondary);">System performance and deployment metrics</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 32px;">
+          <div class="metric-card">
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 40px; height: 40px; background: var(--gradient-primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🚀</div>
+                <div>
+                  <div style="font-size: 24px; font-weight: 700; color: var(--text-primary);" id="totalDeployments">156</div>
+                  <div style="font-size: 12px; color: var(--text-muted);">Total Deployments</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="metric-card">
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 40px; height: 40px; background: var(--gradient-secondary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">📈</div>
+                <div>
+                  <div style="font-size: 24px; font-weight: 700; color: var(--text-primary);" id="successRate">96.4%</div>
+                  <div style="font-size: 12px; color: var(--text-muted);">Success Rate</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="metric-card">
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">⏱️</div>
+                <div>
+                  <div style="font-size: 24px; font-weight: 700; color: var(--text-primary);" id="avgTime">8.5min</div>
+                  <div style="font-size: 12px; color: var(--text-muted);">Avg Deploy Time</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Skill Usage Chart -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px;">
+          <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Skill Usage Statistics</h3>
+          <div id="skillUsageChart">
+            <div style="color: var(--text-muted);">Loading usage data...</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    // Global state
+    // Global State
+    let currentView = 'dashboard';
     let currentMessages = [];
     let isTyping = false;
-    let chatHistory = JSON.parse(localStorage.getItem('aidenChatHistory') || '[]');
     
-    // DOM elements
-    const statusEl = document.getElementById('status');
+    // DOM Elements
+    const pageTitle = document.getElementById('pageTitle');
     const messagesContainer = document.getElementById('messagesContainer');
     const messageInput = document.getElementById('messageInput');
     const sendBtn = document.getElementById('sendBtn');
     const charCount = document.getElementById('charCount');
-    const welcomeScreen = document.getElementById('welcomeScreen');
+    const welcomeContainer = document.getElementById('welcomeContainer');
+    const skillsGrid = document.getElementById('skillsGrid');
     
-    // Initialize
+    // Skills Data
+    const skillsData = {
+      mobile: [
+        {
+          title: 'iOS App Builder',
+          subtitle: 'React Native → TestFlight',
+          description: 'Complete mobile app development pipeline from scaffolding to App Store submission.',
+          icon: '📱',
+          category: 'mobile',
+          metrics: { builds: '23', success: '96%', time: '8min' },
+          actions: ['Build App', 'View Builds']
+        },
+        {
+          title: 'App Store Automation',
+          subtitle: 'Submission & Review',
+          description: 'Automated app submission, review management, and release coordination.',
+          icon: '🍎',
+          category: 'mobile',
+          metrics: { apps: '12', reviews: '4.8★', time: '2min' },
+          actions: ['Submit App', 'Track Reviews']
+        },
+        {
+          title: 'Mobile Analytics',
+          subtitle: 'Performance Tracking',
+          description: 'Real-time app performance monitoring and user engagement analytics.',
+          icon: '📊',
+          category: 'mobile',
+          metrics: { users: '2.3k', retention: '78%', crashes: '0.1%' },
+          actions: ['View Analytics', 'Generate Report']
+        }
+      ],
+      web: [
+        {
+          title: 'Website Cloner',
+          subtitle: 'Clone & Deploy',
+          description: 'Instantly clone any website and deploy to cloud infrastructure with customization.',
+          icon: '🌐',
+          category: 'web',
+          metrics: { cloned: '156', uptime: '99.9%', time: '45s' },
+          actions: ['Clone Site', 'View Deployments']
+        },
+        {
+          title: 'Cloud Deployment',
+          subtitle: 'Google Cloud & CDN',
+          description: 'Automated deployment to Google Cloud with CDN, SSL, and custom domains.',
+          icon: '☁️',
+          category: 'web',
+          metrics: { sites: '89', regions: '12', cdn: '100%' },
+          actions: ['Deploy', 'Manage DNS']
+        },
+        {
+          title: 'SEO Optimization',
+          subtitle: 'Performance & Rankings',
+          description: 'Automated SEO optimization with lighthouse scoring and search ranking.',
+          icon: '🔍',
+          category: 'web',
+          metrics: { score: '94/100', rank: '#3', speed: '1.2s' },
+          actions: ['Optimize', 'Audit']
+        }
+      ],
+      automation: [
+        {
+          title: 'n8n Workflows',
+          subtitle: 'Business Automation',
+          description: 'Create sophisticated business workflows with API integrations and triggers.',
+          icon: '⚡',
+          category: 'automation',
+          metrics: { workflows: '34', runs: '12.5k', success: '98%' },
+          actions: ['Create Workflow', 'View Library']
+        },
+        {
+          title: 'Browser Automation',
+          subtitle: 'Web Scraping & Testing',
+          description: 'Automated browser interactions, form filling, and data extraction.',
+          icon: '🔍',
+          category: 'browser',
+          metrics: { sessions: '445', success: '94%', data: '2.1GB' },
+          actions: ['New Session', 'View Scripts']
+        },
+        {
+          title: 'Agent Deployment',
+          subtitle: 'AI Assistant Distribution',
+          description: 'Deploy and manage specialized AI agents for clients and business processes.',
+          icon: '🤖',
+          category: 'ai',
+          metrics: { agents: '18', active: '16', efficiency: '89%' },
+          actions: ['Deploy Agent', 'Monitor']
+        }
+      ]
+    };
+    
+    // Initialize App
     document.addEventListener('DOMContentLoaded', function() {
-      // Check API health
-      checkApiHealth();
-      
-      // Load chat history
-      loadChatHistory();
-      
       // Setup input handlers
       setupInputHandlers();
       
-      // Auto-resize textarea
+      // Check system health
+      checkSystemHealth();
+      
+      // Load dashboard data
+      loadDashboardData();
+      
+      // Show welcome by default
+      showWelcome();
+      
+      // Refresh dashboard data every 30 seconds
+      setInterval(loadDashboardData, 30000);
+    });
+    
+    function switchMode(mode) {
+      // Update nav tabs
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Hide all views
+      document.querySelectorAll('.content-view').forEach(view => {
+        view.classList.remove('active');
+      });
+      
+      // Show selected view
+      currentView = mode;
+      if (mode === 'dashboard') {
+        document.getElementById('dashboardView').classList.add('active');
+        pageTitle.textContent = 'Aiden AI Control Tower';
+        showWelcome();
+        // Refresh dashboard data when switching to dashboard
+        loadDashboardData();
+      } else if (mode === 'chat') {
+        document.getElementById('chatView').classList.add('active');
+        pageTitle.textContent = 'Chat with Aiden';
+        messageInput.focus();
+      } else if (mode === 'clients') {
+        document.getElementById('clientsView').classList.add('active');
+        pageTitle.textContent = 'Client Management';
+        // Refresh client data when switching to clients
+        loadDashboardData();
+      }
+    }
+    
+    function selectSkill(skillType) {
+      // Update nav items
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      if (skillType === 'dashboard') {
+        showWelcome();
+        pageTitle.textContent = 'Aiden AI Control Tower';
+      } else {
+        showSkillCards(skillType);
+        pageTitle.textContent = skillType.charAt(0).toUpperCase() + skillType.slice(1) + ' Skills';
+      }
+    }
+    
+    function showWelcome() {
+      welcomeContainer.style.display = 'flex';
+      skillsGrid.style.display = 'none';
+    }
+    
+    function showSkillCards(category) {
+      welcomeContainer.style.display = 'none';
+      skillsGrid.style.display = 'grid';
+      
+      const skills = skillsData[category] || [];
+      skillsGrid.innerHTML = skills.map(skill => `
+        <div class="skill-card" onclick="openSkill('${skill.title}')">
+          <div class="skill-header">
+            <div class="skill-icon ${skill.category}">
+              ${skill.icon}
+            </div>
+            <div>
+              <div class="skill-title">${skill.title}</div>
+              <div class="skill-subtitle">${skill.subtitle}</div>
+            </div>
+          </div>
+          
+          <div class="skill-description">
+            ${skill.description}
+          </div>
+          
+          <div class="skill-stats">
+            ${Object.entries(skill.metrics).map(([key, value]) => `
+              <div class="skill-metric">
+                <span class="skill-metric-value">${value}</span>
+                <span class="skill-metric-label">${key}</span>
+              </div>
+            `).join('')}
+          </div>
+          
+          <div class="skill-actions">
+            ${skill.actions.map(action => `
+              <button class="skill-btn skill-btn-primary" onclick="skillAction('${action}', event)">
+                ${action}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function quickAction(type) {
+      if (type === 'chat') {
+        switchMode('chat');
+        return;
+      }
+      
+      const prompts = {
+        mobile: 'Create a professional iOS app for a local business with menu, ordering, and customer management.',
+        web: 'Clone and deploy a modern portfolio website with contact forms and analytics integration.',
+        automation: 'Set up an automated customer onboarding workflow with email sequences and task assignments.'
+      };
+      
+      switchMode('chat');
+      messageInput.value = prompts[type];
+      messageInput.focus();
+    }
+    
+    function openSkill(skillName) {
+      alert(`Opening ${skillName} interface...`);
+    }
+    
+    function skillAction(action, event) {
+      event.stopPropagation();
+      alert(`Executing: ${action}`);
+    }
+    
+    function deployNew() {
+      switchMode('chat');
+      messageInput.value = 'I want to deploy a new project. Show me the available options.';
+      messageInput.focus();
+    }
+    
+    function showSettings() {
+      alert('Settings panel coming soon...');
+    }
+    
+    function setupInputHandlers() {
+      if (!messageInput) return;
+      
       messageInput.addEventListener('input', function() {
         this.style.height = 'auto';
         this.style.height = Math.min(this.scrollHeight, 200) + 'px';
         
-        // Update character count and send button state
         const length = this.value.length;
         charCount.textContent = length;
         sendBtn.disabled = length === 0 || isTyping;
       });
       
-      // Enter to send (Shift+Enter for new line)
       messageInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault();
           sendMessage();
         }
       });
-    });
+    }
     
-    async function checkApiHealth() {
+    async function loadDashboardData() {
       try {
-        const response = await fetch('/api/health');
-        const data = await response.json();
-        statusEl.textContent = `✅ ${data.provider.toUpperCase()} Online`;
-        statusEl.className = 'status-indicator online';
+        const [analytics, clients, deployments, systemStatus] = await Promise.all([
+          fetch('/api/control/analytics').then(r => r.json()),
+          fetch('/api/control/clients').then(r => r.json()),
+          fetch('/api/control/deployments').then(r => r.json()),
+          fetch('/api/control/system-status').then(r => r.json())
+        ]);
+        
+        updateAnalytics(analytics);
+        updateClients(clients);
+        updateDeployments(deployments);
+        updateSystemStatus(systemStatus);
       } catch (error) {
-        statusEl.textContent = '❌ Offline';
-        statusEl.className = 'status-indicator offline';
+        console.error('Failed to load dashboard data:', error);
       }
     }
     
-    function setupInputHandlers() {
-      // Focus on input when page loads
-      messageInput.focus();
+    function updateAnalytics(data) {
+      // Update skill usage cards
+      const skillCards = document.querySelectorAll('.skill-card');
+      skillCards.forEach((card, index) => {
+        const skillNames = ['mobile_expo_scaffold', 'mobile_expo_build_ios', 'browser', 'web_fetch'];
+        const skillData = data.skill_usage[skillNames[index]];
+        if (skillData) {
+          const statsDiv = card.querySelector('.skill-stats');
+          if (statsDiv) {
+            statsDiv.innerHTML = `
+              <span>${skillData.count} uses</span>
+              <span>${skillData.success_rate}% success</span>
+            `;
+          }
+        }
+      });
+      
+      // Update overview metrics
+      const overview = data.overview;
+      if (overview) {
+        updateMetricCard('Total Deployments', overview.total_deployments);
+        updateMetricCard('Active Clients', overview.active_clients);
+        updateMetricCard('Success Rate', `${overview.success_rate}%`);
+        updateMetricCard('Avg Deploy Time', `${overview.avg_deployment_time}min`);
+      }
     }
     
-    function loadChatHistory() {
-      const historyContainer = document.getElementById('chatHistory');
-      historyContainer.innerHTML = '';
-      
-      chatHistory.forEach((chat, index) => {
-        const chatItem = document.createElement('div');
-        chatItem.className = 'chat-item';
-        chatItem.textContent = chat.title;
-        chatItem.onclick = () => loadChat(index);
-        historyContainer.appendChild(chatItem);
+    function updateMetricCard(title, value) {
+      const cards = document.querySelectorAll('.metric-card h3');
+      cards.forEach(card => {
+        if (card.textContent === title) {
+          const valueEl = card.nextElementSibling;
+          if (valueEl) valueEl.textContent = value;
+        }
       });
     }
     
-    function startNewChat() {
-      currentMessages = [];
-      messagesContainer.innerHTML = '';
-      welcomeScreen.style.display = 'flex';
-      messageInput.value = '';
-      messageInput.focus();
+    function updateClients(data) {
+      const clientsList = document.getElementById('clientsList');
+      if (!clientsList) return;
+      
+      clientsList.innerHTML = data.clients.map(client => `
+        <div class="client-item">
+          <div class="client-info">
+            <h4>${client.business_name}</h4>
+            <p>${client.industry} • ${client.plan}</p>
+          </div>
+          <div class="client-status">
+            <span class="status-badge ${client.status}">${client.status}</span>
+            <span class="client-metric">${client.deployments} deployments</span>
+          </div>
+        </div>
+      `).join('');
     }
     
-    function useExamplePrompt(element) {
-      const title = element.querySelector('.example-prompt-title').textContent;
-      const text = element.querySelector('.example-prompt-text').textContent;
+    function updateDeployments(data) {
+      const deploymentsList = document.getElementById('deploymentsList');
+      if (!deploymentsList) return;
       
-      let prompt = '';
-      if (title.includes('Clone')) {
-        prompt = 'Clone the GitHub homepage and deploy it to Google Cloud';
-      } else if (title.includes('iOS')) {
-        prompt = 'Create an iOS app for a local restaurant with menu and ordering';
-      } else if (title.includes('Demo')) {
-        prompt = 'Create a professional demo video showcasing Aiden\'s capabilities';
-      } else if (title.includes('Automate')) {
-        prompt = 'Set up automation for sending appointment reminders to customers';
+      deploymentsList.innerHTML = data.deployments.slice(0, 5).map(deployment => `
+        <div class="deployment-item">
+          <div class="deployment-info">
+            <h4>${deployment.project_name}</h4>
+            <p>${deployment.client_name} • ${deployment.deployment_type}</p>
+          </div>
+          <div class="deployment-status">
+            <span class="status-badge ${deployment.status}">${deployment.status}</span>
+            <span class="deployment-time">${new Date(deployment.created_date).toLocaleDateString()}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function updateSystemStatus(data) {
+      document.getElementById('systemStatus').textContent = `${data.status.toUpperCase()} (${data.uptime})`;
+      
+      // Update system metrics if dashboard view is active
+      const systemMetrics = document.getElementById('systemMetrics');
+      if (systemMetrics) {
+        systemMetrics.innerHTML = `
+          <div class="system-metric">
+            <span>CPU Usage</span>
+            <span>${data.infrastructure.cpu_usage}</span>
+          </div>
+          <div class="system-metric">
+            <span>Memory Usage</span>
+            <span>${data.infrastructure.memory_usage}</span>
+          </div>
+          <div class="system-metric">
+            <span>Skills Active</span>
+            <span>${data.skills.total}</span>
+          </div>
+          <div class="system-metric">
+            <span>Security</span>
+            <span>${data.security.sandbox}</span>
+          </div>
+        `;
       }
-      
-      messageInput.value = prompt;
-      messageInput.focus();
-      sendMessage();
+    }
+    
+    async function checkSystemHealth() {
+      try {
+        const response = await fetch('/api/health');
+        const data = await response.json();
+        document.getElementById('systemStatus').textContent = `${data.provider.toUpperCase()} Online`;
+      } catch (error) {
+        document.getElementById('systemStatus').textContent = 'System Check Failed';
+      }
     }
     
     async function sendMessage() {
       const message = messageInput.value.trim();
       if (!message || isTyping) return;
       
-      // Hide welcome screen
-      if (welcomeScreen.style.display !== 'none') {
-        welcomeScreen.style.display = 'none';
-      }
-      
-      // Add user message
       addMessage('user', message);
       
-      // Clear input
       messageInput.value = '';
       messageInput.style.height = 'auto';
       charCount.textContent = '0';
       sendBtn.disabled = true;
       
-      // Show typing indicator
       showTypingIndicator();
       
       try {
         const response = await fetch('/api/chat', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             message: message,
-            account_id: 'user',
-            business_name: 'Personal',
-            industry: 'general'
+            account_id: 'control_tower',
+            business_name: 'Aiden Control',
+            industry: 'ai_deployment'
           })
         });
         
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-        
         const data = await response.json();
-        
-        // Hide typing indicator
         hideTypingIndicator();
         
-        // Add assistant response
-        addMessage('assistant', data.assistant || 'Sorry, I couldn\'t process that request.');
-        
-        // If there's a taskcard, add it as a separate message
-        if (data.taskcard) {
-          const taskCardContent = `**Generated TaskCard:**\n\`\`\`json\n${JSON.stringify(data.taskcard, null, 2)}\n\`\`\``;
-          addMessage('assistant', taskCardContent, true, data.taskcard);
-        }
-        
-        // Save to history
-        saveCurrentChat();
+        addMessage('assistant', data.assistant || 'I\'m ready to help deploy your next project.');
         
       } catch (error) {
         hideTypingIndicator();
-        addMessage('assistant', `Error: ${error.message}`);
+        addMessage('assistant', `Connection error: ${error.message}`);
       } finally {
         isTyping = false;
         sendBtn.disabled = false;
@@ -741,70 +1531,25 @@
       }
     }
     
-    function addMessage(role, content, isTaskCard = false, taskcard = null) {
+    function addMessage(role, content) {
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${role}`;
       
-      const avatar = document.createElement('div');
-      avatar.className = 'message-avatar';
-      avatar.textContent = role === 'user' ? '👤' : '🤖';
-      
-      const messageContent = document.createElement('div');
-      messageContent.className = 'message-content';
-      
-      // Format content
-      if (content.includes('```')) {
-        // Handle code blocks
-        const parts = content.split('```');
-        let formattedContent = '';
-        
-        for (let i = 0; i < parts.length; i++) {
-          if (i % 2 === 0) {
-            formattedContent += parts[i];
-          } else {
-            const lines = parts[i].split('\n');
-            const language = lines[0];
-            const code = lines.slice(1).join('\n');
-            formattedContent += `<pre><code>${escapeHtml(code)}</code></pre>`;
-          }
-        }
-        messageContent.innerHTML = formattedContent.replace(/\n/g, '<br>');
-      } else if (content.includes('**')) {
-        // Handle bold text
-        messageContent.innerHTML = content
-          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-          .replace(/\n/g, '<br>');
-      } else {
-        messageContent.textContent = content;
-      }
-      
-      // Add actions for assistant messages
-      const actions = document.createElement('div');
-      actions.className = 'message-actions';
-      
-      if (role === 'assistant') {
-        actions.innerHTML = `
-          <button class="action-btn" onclick="copyMessage(this)">📋 Copy</button>
-          ${taskcard ? '<button class="action-btn" onclick="executeTaskCard(this)" data-taskcard=\'' + JSON.stringify(taskcard) + '\'>⚡ Execute</button>' : ''}
-        `;
-      }
-      
-      messageContent.appendChild(actions);
-      messageDiv.appendChild(avatar);
-      messageDiv.appendChild(messageContent);
+      messageDiv.innerHTML = `
+        <div class="message-avatar">${role === 'user' ? '👤' : '🤖'}</div>
+        <div class="message-content">${formatContent(content)}</div>
+      `;
       
       messagesContainer.appendChild(messageDiv);
-      
-      // Scroll to bottom
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
       
-      // Save message to current conversation
-      currentMessages.push({
-        role,
-        content,
-        timestamp: new Date().toISOString(),
-        taskcard: taskcard || null
-      });
+      currentMessages.push({ role, content, timestamp: new Date().toISOString() });
+    }
+    
+    function formatContent(content) {
+      return content
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
     }
     
     function showTypingIndicator() {
@@ -812,17 +1557,10 @@
       const typingDiv = document.createElement('div');
       typingDiv.className = 'message assistant';
       typingDiv.id = 'typingIndicator';
-      
-      const avatar = document.createElement('div');
-      avatar.className = 'message-avatar';
-      avatar.textContent = '🤖';
-      
-      const indicator = document.createElement('div');
-      indicator.className = 'typing-indicator';
-      indicator.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-      
-      typingDiv.appendChild(avatar);
-      typingDiv.appendChild(indicator);
+      typingDiv.innerHTML = `
+        <div class="message-avatar">🤖</div>
+        <div class="message-content" style="color: var(--text-muted);">Aiden is thinking...</div>
+      `;
       messagesContainer.appendChild(typingDiv);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
@@ -835,110 +1573,8 @@
       isTyping = false;
     }
     
-    function copyMessage(button) {
-      const messageContent = button.closest('.message-content');
-      const text = messageContent.textContent.replace('📋 Copy⚡ Execute', '').trim();
-      
-      navigator.clipboard.writeText(text).then(() => {
-        button.textContent = '✅ Copied';
-        setTimeout(() => {
-          button.textContent = '📋 Copy';
-        }, 2000);
-      });
-    }
-    
-    async function executeTaskCard(button) {
-      const taskcard = JSON.parse(button.dataset.taskcard);
-      
-      button.textContent = '⏳ Executing...';
-      button.disabled = true;
-      
-      try {
-        const response = await fetch('/api/task', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({taskcard})
-        });
-        
-        const result = await response.json();
-        
-        if (result.status >= 200 && result.status < 300) {
-          addMessage('assistant', `✅ **Task Executed Successfully!**\n\nStatus: ${result.status}\nResponse: ${result.body || 'Task completed'}`);
-          button.textContent = '✅ Executed';
-        } else {
-          addMessage('assistant', `❌ **Task Execution Failed**\n\nStatus: ${result.status}\nError: ${result.body || result.detail || 'Unknown error'}`);
-          button.textContent = '❌ Failed';
-        }
-        
-      } catch (error) {
-        addMessage('assistant', `❌ **Execution Error**: ${error.message}`);
-        button.textContent = '❌ Error';
-      } finally {
-        button.disabled = false;
-        setTimeout(() => {
-          button.textContent = '⚡ Execute';
-        }, 3000);
-      }
-    }
-    
-    function saveCurrentChat() {
-      if (currentMessages.length === 0) return;
-      
-      // Create chat title from first message
-      const title = currentMessages[0].content.substring(0, 50) + 
-                   (currentMessages[0].content.length > 50 ? '...' : '');
-      
-      // Check if this is an existing chat or new one
-      const existingIndex = chatHistory.findIndex(chat => chat.id === 'current');
-      
-      if (existingIndex >= 0) {
-        chatHistory[existingIndex] = {
-          id: 'current',
-          title,
-          messages: [...currentMessages],
-          lastUpdated: new Date().toISOString()
-        };
-      } else {
-        chatHistory.unshift({
-          id: 'current',
-          title,
-          messages: [...currentMessages],
-          lastUpdated: new Date().toISOString()
-        });
-      }
-      
-      // Limit history to 20 chats
-      if (chatHistory.length > 20) {
-        chatHistory = chatHistory.slice(0, 20);
-      }
-      
-      localStorage.setItem('aidenChatHistory', JSON.stringify(chatHistory));
-      loadChatHistory();
-    }
-    
-    function loadChat(index) {
-      const chat = chatHistory[index];
-      if (!chat) return;
-      
-      currentMessages = [...chat.messages];
-      messagesContainer.innerHTML = '';
-      welcomeScreen.style.display = 'none';
-      
-      chat.messages.forEach(msg => {
-        addMessage(msg.role, msg.content, !!msg.taskcard, msg.taskcard);
-      });
-    }
-    
     function attachFile() {
-      alert('File attachment coming soon!');
-    }
-    
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
+      alert('File attachment feature coming soon!');
     }
   </script>
 </body>

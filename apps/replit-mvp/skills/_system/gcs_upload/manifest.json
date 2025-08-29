@@ -1,0 +1,6 @@
+{
+  "name": "gcs_upload",
+  "version": "2.0.0",
+  "caps": ["net", "fs_read"],
+  "description": "Production-safe Google Cloud Storage upload with cost controls, validation, and CDN deployment."
+}

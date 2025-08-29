@@ -1,0 +1,6 @@
+{
+  "name": "cloud_run_deploy",
+  "version": "2.0.0", 
+  "caps": ["net", "fs_read", "exec"],
+  "description": "Production-safe Cloud Run deployment with cost estimation, auto-scaling controls, and live URL generation."
+}

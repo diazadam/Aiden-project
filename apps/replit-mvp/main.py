@@ -932,10 +932,86 @@ Your enhanced website is deployed and ready to use! The new version includes mod
     
     return None  # No direct execution needed
 
+# ---- Power-Stack v2 Safe Execution Routes ----
+@app.post("/api/power/plan")
+def create_safe_plan(body: dict):
+    """Create a safe execution plan with cost estimation"""
+    try:
+        from brain.power_planner_v2 import power_planner
+        user_query = body.get("message", "")
+        account_id = body.get("account_id", "local")
+        
+        plan = power_planner.create_execution_plan(user_query, account_id)
+        
+        return {
+            "ok": True,
+            "plan": {
+                "user_query": plan.user_query,
+                "steps": plan.plan_steps,
+                "execution_steps": plan.execution_steps,
+                "estimated_cost": plan.estimated_total_cost,
+                "risk_level": plan.risk_level,
+                "approval_required": plan.approval_required
+            },
+            "safety_checks": plan.safety_checks,
+            "message": f"Plan created. Estimated cost: ${plan.estimated_total_cost:.2f}"
+        }
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+@app.post("/api/power/execute")
+def execute_safe_plan(body: dict):
+    """Execute a plan with full safety controls"""
+    try:
+        from brain.power_planner_v2 import plan_and_execute_safely
+        
+        user_query = body.get("message", "")
+        account_id = body.get("account_id", "local")
+        pin = body.get("pin")
+        
+        result = plan_and_execute_safely(user_query, account_id, pin)
+        return {"ok": True, **result}
+        
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+@app.get("/api/power/capabilities")
+def get_power_capabilities():
+    """Get current power-stack capabilities and safety limits"""
+    try:
+        from brain.capability_manifest import build_capability_manifest
+        from brain.safety_governor import safety_governor
+        
+        manifest = build_capability_manifest()
+        
+        return {
+            "ok": True,
+            "capabilities": manifest,
+            "safety_limits": {
+                "max_query_bytes": safety_governor.max_query_bytes,
+                "max_operation_cost": safety_governor.max_operation_cost,
+                "daily_cost_limit": safety_governor.daily_cost_limit,
+                "approval_threshold": safety_governor.require_approval_above
+            },
+            "brain_status": "power-stack-v2-enabled"
+        }
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+@app.get("/api/power/memory/similar")
+def find_similar_memories(query: str, limit: int = 5):
+    """Find similar past executions for learning"""
+    try:
+        from brain.memory_enhanced import find_similar_solutions
+        memories = find_similar_solutions(query, limit)
+        return {"ok": True, "similar_memories": memories}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
 # ---- Core API Routes ----
 @app.get("/api/health")
 def health():
-    return {"ok": True, "app": APP_NAME, "provider": PROVIDER}
+    return {"ok": True, "app": APP_NAME, "provider": PROVIDER, "power_stack": "v2"}
 
 @app.post("/api/chat", response_model=ChatOut)
 async def chat(body: ChatIn):

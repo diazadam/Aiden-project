@@ -1,0 +1,6 @@
+{
+  "name": "website_clone_remix",
+  "version": "0.1.0",
+  "caps": ["net", "fs_write"],
+  "description": "Clone a website's content and create a modern remix with enhanced design and features."
+}

@@ -712,6 +712,33 @@
       transform: translateY(-1px);
     }
     
+    /* Chat Controls */
+    .chat-controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding: 0 16px;
+    }
+    
+    .control-btn {
+      padding: 8px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .control-btn:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+      transform: translateY(-1px);
+    }
+    
     /* Responsive Design */
     @media (max-width: 768px) {
       .sidebar {
@@ -946,6 +973,11 @@
       <div class="content-view chat-view" id="chatView">
         <div class="messages-container" id="messagesContainer">
           <!-- Messages will be added here -->
+        </div>
+        
+        <div class="chat-controls">
+          <button onclick="newChat()" class="control-btn">🔄 New Chat</button>
+          <button onclick="switchMode('dashboard')" class="control-btn">🏠 Dashboard</button>
         </div>
         
         <div class="input-container">
@@ -1575,6 +1607,27 @@
     
     function attachFile() {
       alert('File attachment feature coming soon!');
+    }
+    
+    function newChat() {
+      // Clear the chat messages
+      messagesContainer.innerHTML = '';
+      currentMessages = [];
+      
+      // Clear the input
+      messageInput.value = '';
+      messageInput.style.height = 'auto';
+      charCount.textContent = '0';
+      sendBtn.disabled = true;
+      
+      // Reset typing state
+      isTyping = false;
+      
+      // Focus the input
+      messageInput.focus();
+      
+      // Add welcome message
+      addMessage('assistant', 'Hello! I\'m Aiden, ready to help you build, deploy, or automate anything. What would you like to create today?');
     }
   </script>
 </body>

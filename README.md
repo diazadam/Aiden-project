@@ -104,13 +104,25 @@ make run-voice   # press Enter to speak
 
 ## 📋 Recent Enhancements
 
-### **Version 3.1 - Browser Automation & Subprocess Validation (Latest - Phase 2.1)**
-- 🌐 **Browser Automation** - Playwright-powered web automation with screenshot artifacts
-- 🧪 **Subprocess Validation** - Isolated venv testing for proposed skills
-- 📸 **Visual Artifacts** - Screenshot proofs stored in tenant-scoped workdirs
-- 🔍 **Content Extraction** - Safe web scraping (title, H1, image alts)
-- ⚡ **3 System Skills** - web_fetch, browser, image_watermark ready-to-use
-- 🛡️ **Enhanced Security** - URL validation and sandbox cleanup
+### **Version 4.0 - Mobile Development Pipeline (Latest - Phase 3)**
+- 📱 **Complete Mobile Workflow** - React Native apps from prompt to TestFlight
+- 🏗️ **Expo Scaffolding** - Auto-generated apps with branding, icons, splash screens
+- ☁️ **EAS Cloud Builds** - iOS builds without local Xcode requirements  
+- 🍎 **App Store Integration** - Direct submission to App Store Connect
+- 🔐 **Hardened Security** - Subprocess isolation, network gating, resource limits
+- 💰 **Business Ready** - "Mobile MVP in a Week" offering ($3k-$8k)
+
+#### **Mobile Skills (3 total):**
+- `mobile_expo_scaffold` - Generate complete React Native app structure
+- `mobile_expo_build_ios` - Trigger EAS cloud builds, return TestFlight URLs  
+- `mobile_expo_submit_ios` - Submit builds to App Store Connect for review
+
+### **Version 3.2 - Security Hardening & Subprocess Isolation**
+- 🔒 **Subprocess Sandbox** - Skills run in isolated processes by default
+- 🚫 **Network Gating** - Network blocked unless skill declares 'net' capability
+- ⏱️ **Resource Limits** - CPU (30s), Memory (800MB), File handles (256)  
+- 🛡️ **Enhanced PIN Security** - Capability-based authentication for dangerous operations
+- 📊 **6 System Skills** - Complete skill ecosystem operational
 
 ### **Version 3.0 - Self-Expanding Skills (Phase 2)**
 - 🧠 **Dynamic Skill Learning** - Aiden can now learn new skills on the fly

@@ -59,12 +59,22 @@ def main():
     if os.environ.get("AIDEN_NO_NET") == "1":
         _install_no_net()
 
-    # Import registry & run
-    # NOTE: Parent sets PYTHONPATH to project root
+    # Ensure we can import skills - add current directory to path if needed
+    current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if current_dir not in sys.path:
+        sys.path.insert(0, current_dir)
+
+    # Import registry & run (suppress prints)
+    import io
+    import contextlib
     from skills.registry import REGISTRY
     from skills.contracts import SkillContext
     
-    REGISTRY.load_all()
+    # Suppress registry loading prints
+    f = io.StringIO()
+    with contextlib.redirect_stdout(f):
+        REGISTRY.load_all()
+    
     rs = REGISTRY.get(name)
     if not rs or not rs.enabled:
         print(json.dumps({"ok": False, "message": f"skill {name} not found"}))

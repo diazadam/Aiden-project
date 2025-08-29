@@ -103,10 +103,15 @@ def run_skill(name: str, account_id: str, args: Dict[str, Any], caps_token: Opti
             return SkillOutputs(ok=False, message=f"Sandbox failed rc={result.returncode}: {stderr_msg}")
         
         try:
-            data = json.loads(result.stdout.decode() or "{}")
+            stdout_text = result.stdout.decode()
+            if not stdout_text.strip():
+                return SkillOutputs(ok=False, message="Empty output from sandbox")
+            data = json.loads(stdout_text)
             return SkillOutputs(**data)
-        except json.JSONDecodeError:
-            return SkillOutputs(ok=False, message="Invalid JSON output from sandbox")
+        except json.JSONDecodeError as e:
+            stdout_preview = result.stdout.decode()[:200]
+            stderr_preview = result.stderr.decode()[:200]
+            return SkillOutputs(ok=False, message=f"Invalid JSON from sandbox: {e}. stdout: {stdout_preview}, stderr: {stderr_preview}")
             
     except subprocess.TimeoutExpired:
         return SkillOutputs(ok=False, message="Skill timed out")

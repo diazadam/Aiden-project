@@ -18,6 +18,7 @@ from skills.registry import REGISTRY, Manifest, APPROVED_DIR, PENDING_DIR, AUDIT
 from skills.runtime import run_skill
 from skills.validate_pending import validate_pending_skill
 from security.policies import SECRET_PIN, CapsPolicy
+from connectors.openai_llm import OpenAIChat
 
 # ---- Setup & Config ----
 ROOT = Path(__file__).parent
@@ -412,6 +413,105 @@ def run_skill_endpoint(body: RunSkillBody):
     token = body.pin if body.pin else None
     result = run_skill(body.name, body.account_id, body.args, caps_token=token)
     return result.model_dump()
+
+class ProposeFromPromptBody(BaseModel):
+    name: str
+    description: str = ""
+    caps: List[str] = []     # suggested caps (we still PIN gate dangerous)
+    prompt: str              # plain English description / spec
+    version: str = "0.1.0"
+
+SKILL_SYSTEM_SPEC = """
+You are generating a Python skill for the Aiden Skills framework.
+
+Rules:
+- File must be named skill.py and define class SkillImpl(Skill) with:
+  - name: str (match the proposed name)
+  - version: "0.1.0" (or provided)
+  - caps: set[str] (only what's necessary: fs_write, net, exec, system)
+  - Inputs(BaseModel), Outputs(BaseModel)
+  - def run(self, ctx: SkillContext, args: Inputs) -> Outputs
+- Import from 'skills.contracts' (absolute) for Skill, SkillInputs, SkillOutputs, SkillContext.
+- NO external network calls unless caps includes 'net'.
+- If writing files, write ONLY to ctx.workdir.
+- Keep code under 200 lines if possible; keep dependencies minimal.
+
+Also generate a short pytest file content (optional) that imports your skill via
+'from skills._sandboxed.<NAME>.skill import SkillImpl' and tests run().
+Return JSON with fields: code (string), tests (string or empty).
+"""
+
+@app.post("/api/skills/propose_from_prompt")
+def propose_from_prompt(body: ProposeFromPromptBody, account_id: str = "local"):
+    """Generate a skill from plain English using LLM"""
+    try:
+        llm = OpenAIChat()
+        sys_msg = "You write safe, minimal Python plugins for Aiden Skills."
+        user_prompt = f"""
+Write a new skill named '{body.name}' (version {body.version}) with caps {body.caps}.
+Description: {body.description}
+
+Spec (user intent):
+{body.prompt}
+
+Follow the SKILL_SYSTEM_SPEC strictly and return JSON with keys code, tests.
+SKILL_SYSTEM_SPEC:
+{SKILL_SYSTEM_SPEC}
+"""
+        resp = llm.complete(prompt=user_prompt, system=sys_msg)
+        if not resp.ok:
+            raise HTTPException(500, f"LLM error: {resp.message}")
+
+        # Parse JSON in model output (model may emit text; try to find the JSON block)
+        import re
+        txt = resp.data.strip()
+        # naive JSON detection
+        m = re.search(r'\{[\s\S]*\}', txt)
+        if not m:
+            raise HTTPException(400, "LLM did not return JSON")
+        try:
+            j = json.loads(m.group(0))
+        except Exception as e:
+            raise HTTPException(400, f"JSON parse error: {e}")
+
+        # Build manifest + write pending
+        pending = os.path.join(PENDING_DIR, body.name)
+        if os.path.exists(pending):
+            shutil.rmtree(pending)
+        os.makedirs(pending, exist_ok=True)
+
+        code = j.get("code","")
+        tests = j.get("tests","")
+        if not code:
+            raise HTTPException(400, "Generated code empty")
+
+        code_path = os.path.join(pending, "skill.py")
+        with open(code_path, "w") as f:
+            f.write(code)
+
+        checksum = hashlib.sha256(code.encode()).hexdigest()
+        manifest = Manifest(name=body.name, version=body.version, caps=body.caps, description=body.description, checksum=checksum)
+        with open(os.path.join(pending, "manifest.json"), "w") as f:
+            f.write(manifest.model_dump_json(indent=2))
+
+        if tests:
+            os.makedirs(os.path.join(pending, "tests"), exist_ok=True)
+            with open(os.path.join(pending, "tests", f"test_{body.name}.py"), "w") as f:
+                f.write(tests)
+
+        # Log proposal
+        with open(AUDIT_LOG, "a") as log:
+            log.write(json.dumps({
+                "event": "propose_from_prompt",
+                "name": body.name,
+                "by": account_id,
+                "timestamp": datetime.now().isoformat()
+            }) + "\n")
+
+        return {"ok": True, "pending_path": pending, "hint": "Run /api/skills/validate then /approve"}
+
+    except Exception as e:
+        raise HTTPException(500, f"Skill generation failed: {str(e)}")
 
 # ---- Core API Routes ----
 @app.get("/api/health")

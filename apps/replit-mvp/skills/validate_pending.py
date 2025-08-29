@@ -55,20 +55,24 @@ def validate_pending_skill(name: str) -> dict:
     py = os.path.join(venv_dir, "bin", "python")
     pip = os.path.join(venv_dir, "bin", "pip")
 
-    # Install minimal deps for tests
+    # Install minimal deps for tests + optional skill requirements
     reqs = ["pytest"]
+    skill_reqs = os.path.join(pending, "requirements.txt")
     tests_reqs = os.path.join(pending, "tests", "requirements.txt")
+    
+    # Install skill requirements first (so tests can import)
+    install_cmds = []
+    if os.path.exists(skill_reqs):
+        install_cmds.append([pip, "install", "-r", skill_reqs])
+    install_cmds.append([pip, "install", *reqs])
     if os.path.exists(tests_reqs):
-        reqs.append(f"-r{tests_reqs}")
+        install_cmds.append([pip, "install", "-r", tests_reqs])
 
-    code = 0
-    out = ""
-    err = ""
-
-    # Install requirements
-    code, out, err = _run([pip, "install", *reqs], env=os.environ.copy(), cwd=None, timeout=240)
-    if code != 0:
-        return {"ok": False, "message": "pip install failed", "stderr": err[:1000]}
+    # Run all install commands
+    for cmd in install_cmds:
+        code, out, err = _run(cmd, env=os.environ.copy(), cwd=None, timeout=300)
+        if code != 0:
+            return {"ok": False, "message": "pip install failed", "stderr": err[:1000], "cmd": " ".join(cmd)}
 
     # Create a sandboxed package path so '..contracts' resolves:
     # We copy pending skill into skills/_sandboxed/<name> to mirror package layout.

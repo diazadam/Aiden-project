@@ -21,7 +21,7 @@ TIMEOUT_SEC  = int(os.environ.get("AIDEN_SKILL_TIMEOUT", "25"))
 
 def _inproc_run(name: str, ctx: SkillContext, args: dict) -> SkillOutputs:
     """Run skill in the current process (Phase 2 v1)"""
-    from ..security.policies import CapsPolicy, SECRET_PIN
+    from security.policies import CapsPolicy, SECRET_PIN
     
     rs = REGISTRY.get(name)
     if not rs or not rs.enabled:

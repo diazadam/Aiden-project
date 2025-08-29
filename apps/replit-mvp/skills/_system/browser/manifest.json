@@ -1,6 +1,6 @@
 {
   "name": "browser",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "caps": ["net"],
-  "description": "Open a page, optionally extract simple content, and return a screenshot artifact."
+  "description": "Open a page, run safe scripted steps (open/click/type/wait/extract), and return screenshots."
 }

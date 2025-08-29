@@ -1,6 +1,11 @@
-# 🤖 Aiden AI - Enhanced Superintelligence Platform
+# 🤖 AidenAI - Enterprise Superintelligence Platform
 
-**Intelligence. Deployed.**
+**Intelligence. Deployed. Protected.**
+
+> **⚠️ PROPRIETARY & CONFIDENTIAL**  
+> This repository contains proprietary technology of AidenAI Systems.  
+> All rights reserved. Unauthorized access, use, or distribution is prohibited.  
+> © 2025 AidenAI Systems. See [LICENSE](LICENSE) and [COPYRIGHT.md](COPYRIGHT.md) for details.
 
 ## 🎯 Overview
 

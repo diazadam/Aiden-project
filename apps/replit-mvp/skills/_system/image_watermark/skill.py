@@ -3,7 +3,7 @@ Image watermark skill - Add text watermarks to images
 """
 import os
 from PIL import Image, ImageDraw, ImageFont
-from ...skills.contracts import Skill, SkillInputs, SkillOutputs, SkillContext
+from skills.contracts import Skill, SkillInputs, SkillOutputs, SkillContext
 
 class Inputs(SkillInputs):
     input_path: str

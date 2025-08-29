@@ -5,7 +5,7 @@ from typing import List, Optional
 import re
 import requests
 from bs4 import BeautifulSoup
-from ...skills.contracts import Skill, SkillInputs, SkillOutputs, SkillContext
+from skills.contracts import Skill, SkillInputs, SkillOutputs, SkillContext
 
 class Inputs(SkillInputs):
     url: str

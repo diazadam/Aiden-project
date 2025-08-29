@@ -1,6 +1,0 @@
-{
-  "name": "bigquery_safe",
-  "version": "2.0.0",
-  "caps": ["net"],
-  "description": "Production-safe BigQuery with cost controls, dry-run validation, and result caching."
-}

@@ -1,6 +1,6 @@
 {
   "name": "gcs_upload",
-  "version": "2.0.0",
-  "caps": ["net", "fs_read"],
-  "description": "Production-safe Google Cloud Storage upload with cost controls, validation, and CDN deployment."
+  "version": "0.2.0",
+  "caps": ["net","fs_write"],
+  "description": "Upload a local file to GCS; return v4 signed URL (UBL Access friendly)."
 }

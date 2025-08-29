@@ -1,0 +1,119 @@
+# AidenAI Tool Cards - Skill Registry and Capability Mapping
+
+skills:
+  # Web & Browser Automation
+  - name: browser
+    title: Browser Automation
+    category: web
+    description: Full browser control with Playwright - screenshots, navigation, form filling
+    capabilities: [screenshot, navigate, extract, interact]
+    risk_level: medium
+    
+  - name: web_site_builder  
+    title: Website Builder
+    category: web
+    description: Generate and deploy professional websites instantly
+    capabilities: [html_generation, css_styling, deployment]
+    risk_level: low
+    
+  - name: web_fetch
+    title: Web Content Fetcher
+    category: web
+    description: Fetch and parse web content for analysis and enhancement
+    capabilities: [content_extraction, html_parsing]
+    risk_level: low
+
+  # Google Cloud Platform
+  - name: bigquery_query
+    title: BigQuery Analytics
+    category: data
+    description: Execute SQL queries with cost controls and safety validation
+    capabilities: [sql_execution, cost_estimation, result_caching]
+    risk_level: high
+    requires_pin: true
+    
+  - name: gcs_upload
+    title: Cloud Storage Upload
+    category: storage  
+    description: Upload files to GCS with signed URLs and CDN support
+    capabilities: [file_upload, cdn_deployment, url_generation]
+    risk_level: medium
+    requires_pin: true
+    
+  - name: cloud_run_deploy
+    title: Cloud Run Deployment
+    category: deployment
+    description: Build and deploy containerized services with auto-scaling
+    capabilities: [docker_build, service_deployment, cost_forecasting]
+    risk_level: high
+    requires_pin: true
+
+  # Mobile Development
+  - name: mobile_expo_scaffold
+    title: Mobile App Scaffold
+    category: mobile
+    description: Generate React Native app structure with Expo
+    capabilities: [project_generation, react_native, expo_integration]
+    risk_level: low
+    
+  - name: mobile_expo_build_ios
+    title: iOS Build (EAS)
+    category: mobile
+    description: Build iOS apps using Expo Application Services
+    capabilities: [ios_build, eas_integration, app_store_prep]
+    risk_level: medium
+    requires_pin: true
+    
+  - name: mobile_expo_submit_ios
+    title: iOS App Store Submit
+    category: mobile
+    description: Submit iOS apps to TestFlight and App Store
+    capabilities: [app_store_submission, testflight_upload]
+    risk_level: high
+    requires_pin: true
+
+  # Image Processing
+  - name: image_watermark
+    title: Image Watermark
+    category: media
+    description: Add watermarks and process images
+    capabilities: [image_processing, watermark_overlay]
+    risk_level: low
+
+categories:
+  web:
+    icon: "🌐"
+    description: "Web development and browser automation"
+    
+  data:
+    icon: "📊" 
+    description: "Data analytics and processing"
+    
+  storage:
+    icon: "📁"
+    description: "File storage and management"
+    
+  deployment:
+    icon: "🚀"
+    description: "Service deployment and infrastructure"
+    
+  mobile:
+    icon: "📱"
+    description: "Mobile app development and distribution"
+    
+  media:
+    icon: "🎨"
+    description: "Media processing and manipulation"
+
+risk_levels:
+  low:
+    color: "#10B981"
+    description: "Safe operations with minimal impact"
+    
+  medium:
+    color: "#F59E0B" 
+    description: "Moderate operations requiring attention"
+    
+  high:
+    color: "#EF4444"
+    description: "High-impact operations requiring authorization"

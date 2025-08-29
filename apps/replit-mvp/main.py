@@ -2,6 +2,7 @@ import os, io, json, zipfile, fnmatch, shutil, hashlib
 from typing import Optional, Literal, List, Dict, Any
 from pathlib import Path
 from datetime import datetime
+from pydantic import BaseModel
 
 import httpx
 from fastapi import FastAPI, Request, HTTPException, APIRouter
@@ -19,6 +20,7 @@ from skills.runtime import run_skill
 from skills.validate_pending import validate_pending_skill
 from security.policies import SECRET_PIN, CapsPolicy
 from connectors.openai_llm import OpenAIChat
+from telemetry.ledger import append_entry, read_recent
 
 # ---- Setup & Config ----
 ROOT = Path(__file__).parent
@@ -114,6 +116,74 @@ async def sb_recent_messages(account_id:str, limit:int=20):
         return []
 
 app = FastAPI(title=APP_NAME)
+
+# Helper to extract key artifacts from skill results
+def _pick_key_artifact(result: dict) -> str | None:
+    data = result.get("data") or {}
+    arts = result.get("artifacts") or {}
+    if isinstance(data, dict):
+        for k in ("build_url","service_url","public_url","signed_url"):
+            if data.get(k): return data[k]
+        for v in data.values():
+            if isinstance(v,str) and v.startswith("http"): return v
+    if isinstance(arts, dict):
+        for v in arts.values():
+            if isinstance(v,str): return v
+    return None
+
+# ====== Tower API ======
+from fastapi import APIRouter
+tower = APIRouter(prefix="/api/tower", tags=["tower"])
+
+@tower.get("/featured")
+def tower_featured():
+    FEATURED = [
+        {"id":"website_deploy","title":"Website → Deploy","skill":"web_site_builder","emoji":"🌐"},
+        {"id":"browser_snap","title":"Browser Crawl & Screenshot","skill":"browser","emoji":"📸"},
+        {"id":"ios_build","title":"iOS Build (Expo/EAS)","skill":"mobile_expo_build_ios","emoji":"📱"},
+        {"id":"bq_query","title":"BigQuery Query","skill":"bigquery_query","emoji":"🧮"},
+    ]
+    PRESETS = [
+        {"id":"browser_example","label":"Snapshot example.com","skill":"browser","pin_required":False,
+         "args":{"url":"https://example.com","steps":[{"action":"extract","extract":"title"}]}},
+    ]
+    return {"featured": FEATURED, "presets": PRESETS}
+
+class RunPresetBody(BaseModel):
+    id: str
+    account_id: str = "local"
+    pin: Optional[str] = None
+
+from skills.runtime import run_skill as _run_skill
+@tower.post("/run-preset")
+def tower_run_preset(body: RunPresetBody):
+    PRESETS = {
+      "browser_example": {"skill":"browser","args":{"url":"https://example.com","steps":[{"action":"extract","extract":"title"}]}, "pin_required":False},
+    }
+    p = PRESETS.get(body.id)
+    if not p: return {"ok": False, "message":"preset not found"}
+    out = _run_skill(p["skill"], account_id=body.account_id, args=p["args"], caps_token=body.pin)
+    result = out.model_dump()
+    append_entry({
+        "ts": int(datetime.utcnow().timestamp()*1000),
+        "skill": p["skill"],
+        "account_id": body.account_id,
+        "ok": result.get("ok", False),
+        "message": result.get("message"),
+        "key_artifact": _pick_key_artifact(result),
+    })
+    return result
+
+@tower.get("/recent")
+def tower_recent(limit: int = 20):
+    return {"items": read_recent(limit=limit)}
+
+app.include_router(tower)
+
+# ====== Static mount for artifacts (optional but handy) ======
+ART_ROOT = "/tmp/aiden_work"
+if os.path.isdir(ART_ROOT):
+    app.mount("/artifacts", StaticFiles(directory=ART_ROOT), name="artifacts")
 
 # Load skills registry at startup
 @app.on_event("startup")

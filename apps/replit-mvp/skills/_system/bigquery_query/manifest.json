@@ -1,0 +1,6 @@
+{
+  "name": "bigquery_query",
+  "version": "0.2.0",
+  "caps": ["net"],
+  "description": "Run a SQL query in BigQuery with labels & byte caps; return a preview and optional destination table."
+}

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AidenAI Control Tower</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .featured-skills {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .featured-skills h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .skill-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-align: left;
+        }
+        
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .skill-card .emoji {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .skill-card .title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .skill-card .description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .recent-activity {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .recent-activity h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .activity-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .activity-status.success {
+            background: #10B981;
+        }
+        
+        .activity-status.error {
+            background: #EF4444;
+        }
+        
+        .activity-status.pending {
+            background: #F59E0B;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-skill {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .activity-message {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .activity-time {
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        .activity-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+        
+        .activity-link:hover {
+            text-decoration: underline;
+        }
+        
+        .presets-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .presets-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .presets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .preset-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-align: center;
+        }
+        
+        .preset-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            color: #666;
+        }
+        
+        .error {
+            color: #EF4444;
+            text-align: center;
+            padding: 20px;
+            background: #FEF2F2;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AidenAI Control Tower</h1>
+            <p>Production-Safe AI System with Enterprise Controls</p>
+        </div>
+        
+        <div class="dashboard">
+            <div class="featured-skills">
+                <h2>🔥 Featured Skills</h2>
+                <div id="skillsGrid" class="skills-grid">
+                    <div class="loading">Loading skills...</div>
+                </div>
+            </div>
+            
+            <div class="recent-activity">
+                <h2>📈 Recent Activity</h2>
+                <div id="activityList" class="activity-list">
+                    <div class="loading">Loading activity...</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="presets-section">
+            <h2>⚡ Quick Actions</h2>
+            <div id="presetsGrid" class="presets-grid">
+                <div class="loading">Loading presets...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let featuredSkills = [];
+        let presets = [];
+        
+        // Load featured skills and presets
+        async function loadFeatured() {
+            try {
+                const response = await fetch('/api/tower/featured');
+                const data = await response.json();
+                featuredSkills = data.featured || [];
+                presets = data.presets || [];
+                renderSkills();
+                renderPresets();
+            } catch (error) {
+                document.getElementById('skillsGrid').innerHTML = '<div class="error">Failed to load skills</div>';
+                document.getElementById('presetsGrid').innerHTML = '<div class="error">Failed to load presets</div>';
+            }
+        }
+        
+        // Load recent activity
+        async function loadRecent() {
+            try {
+                const response = await fetch('/api/tower/recent?limit=20');
+                const data = await response.json();
+                renderActivity(data.items || []);
+            } catch (error) {
+                document.getElementById('activityList').innerHTML = '<div class="error">Failed to load activity</div>';
+            }
+        }
+        
+        // Render skills grid
+        function renderSkills() {
+            const grid = document.getElementById('skillsGrid');
+            if (featuredSkills.length === 0) {
+                grid.innerHTML = '<div class="error">No skills available</div>';
+                return;
+            }
+            
+            grid.innerHTML = featuredSkills.map(skill => `
+                <button class="skill-card" onclick="runSkill('${skill.skill}')">
+                    <span class="emoji">${skill.emoji}</span>
+                    <div class="title">${skill.title}</div>
+                    <div class="description">${skill.id}</div>
+                </button>
+            `).join('');
+        }
+        
+        // Render presets grid
+        function renderPresets() {
+            const grid = document.getElementById('presetsGrid');
+            if (presets.length === 0) {
+                grid.innerHTML = '<div class="error">No presets available</div>';
+                return;
+            }
+            
+            grid.innerHTML = presets.map(preset => `
+                <button class="preset-card" onclick="runPreset('${preset.id}')">
+                    <div class="title">${preset.label}</div>
+                </button>
+            `).join('');
+        }
+        
+        // Render recent activity
+        function renderActivity(items) {
+            const list = document.getElementById('activityList');
+            if (items.length === 0) {
+                list.innerHTML = '<div class="error">No recent activity</div>';
+                return;
+            }
+            
+            list.innerHTML = items.map(item => {
+                const timestamp = new Date(item.ts).toLocaleString();
+                const status = item.ok ? 'success' : 'error';
+                const statusText = item.ok ? '✅' : '❌';
+                
+                return `
+                    <div class="activity-item">
+                        <div class="activity-status ${status}"></div>
+                        <div class="activity-content">
+                            <div class="activity-skill">${statusText} ${item.skill || 'Unknown'}</div>
+                            <div class="activity-message">${item.message || 'No message'}</div>
+                            <div class="activity-time">${timestamp}</div>
+                            ${item.key_artifact ? `<a href="${item.key_artifact}" class="activity-link" target="_blank">View Result</a>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Run a skill (placeholder)
+        function runSkill(skillName) {
+            alert(`Running skill: ${skillName}`);
+            // TODO: Implement skill execution UI
+        }
+        
+        // Run a preset
+        async function runPreset(presetId) {
+            try {
+                const response = await fetch('/api/tower/run-preset', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: presetId,
+                        account_id: 'local'
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.ok) {
+                    alert(`Preset executed successfully: ${result.message}`);
+                } else {
+                    alert(`Preset failed: ${result.message}`);
+                }
+                
+                // Refresh activity
+                setTimeout(loadRecent, 1000);
+                
+            } catch (error) {
+                alert(`Failed to run preset: ${error.message}`);
+            }
+        }
+        
+        // Load data on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadFeatured();
+            loadRecent();
+            
+            // Auto-refresh activity every 30 seconds
+            setInterval(loadRecent, 30000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "mobile_expo_scaffold",
+  "version": "0.1.0",
+  "caps": ["fs_write","exec","net"],
+  "description": "Scaffold an Expo app in tenant workdir, configure name/slug/bundle IDs, and generate icons/splash."
+}

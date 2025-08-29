@@ -1,0 +1,6 @@
+{
+  "name": "mobile_expo_build_ios",
+  "version": "0.1.0",
+  "caps": ["exec","net","fs_write"],
+  "description": "Run EAS build for iOS in preview/internal mode and return the build URL."
+}

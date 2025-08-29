@@ -36,6 +36,13 @@ connectors-smoke:
 sandbox-reset:
 	rm -rf /tmp/aiden_work || true
 
+# Phase 2.1: Browser Automation & Subprocess Validation
+playwright-install:
+	$(RUN) -m playwright install chromium
+
+skills-validate:
+	curl -s -X POST http://localhost:8001/api/skills/validate -H 'Content-Type: application/json' -d '{"name":"echo_text"}' | jq
+
 doctor:
 	$(RUN) -c "import os; req=['OPENAI_API_KEY','AIDEN_MASTER_PIN']; missing=[k for k in req if not os.environ.get(k)]; print('Missing:',missing if missing else 'OK')"
 

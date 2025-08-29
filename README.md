@@ -104,14 +104,21 @@ make run-voice   # press Enter to speak
 
 ## 📋 Recent Enhancements
 
-### **Version 3.0 - Self-Expanding Skills (Latest - Phase 2)**
+### **Version 3.1 - Browser Automation & Subprocess Validation (Latest - Phase 2.1)**
+- 🌐 **Browser Automation** - Playwright-powered web automation with screenshot artifacts
+- 🧪 **Subprocess Validation** - Isolated venv testing for proposed skills
+- 📸 **Visual Artifacts** - Screenshot proofs stored in tenant-scoped workdirs
+- 🔍 **Content Extraction** - Safe web scraping (title, H1, image alts)
+- ⚡ **3 System Skills** - web_fetch, browser, image_watermark ready-to-use
+- 🛡️ **Enhanced Security** - URL validation and sandbox cleanup
+
+### **Version 3.0 - Self-Expanding Skills (Phase 2)**
 - 🧠 **Dynamic Skill Learning** - Aiden can now learn new skills on the fly
 - 🔐 **Governance Pipeline** - Propose → Validate → Approve → Execute workflow
 - 🛡️ **Capability-Based Security** - PIN-gated permissions for dangerous operations
 - 📦 **Sandboxed Execution** - Safe skill runtime with resource limits
 - 🔌 **Typed Connectors** - Retry/timeout/cost tracking for external APIs
 - 📊 **Skills Registry** - Hot-loadable skills with versioning and metadata
-- 🎯 **Seed Skills** - Built-in web_fetch and image_watermark capabilities
 
 #### **The 4-Step Self-Learning Flow:**
 1. **Propose** - Generate new skill code + tests with LLM assistance
@@ -164,6 +171,10 @@ The transformation from consultative to execution-focused AI can be tested by co
 - `make skills-test` — Run skills system tests
 - `make connectors-smoke` — Test API connector integrations
 - `make sandbox-reset` — Clear tenant working directories
+
+### **Phase 2.1: Browser & Validation:**
+- `make playwright-install` — Install Chromium browser for automation
+- `make skills-validate` — Test skill validation endpoint
 
 ## ⚙️ Configuration
 

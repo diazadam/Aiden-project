@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aiden Test Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #0f0f0f; color: white; }
+        .test { background: #1a1a1a; padding: 20px; border-radius: 10px; margin: 10px 0; }
+        .success { border-left: 5px solid green; }
+        .error { border-left: 5px solid red; }
+        button { background: #19c37d; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🤖 Aiden Connection Test</h1>
+    
+    <div class="test">
+        <h3>API Health Test</h3>
+        <div id="api-status">Testing...</div>
+        <button onclick="testAPI()">Test API</button>
+    </div>
+    
+    <div class="test">
+        <h3>Chat Test</h3>
+        <input type="text" id="messageInput" placeholder="Type a message..." style="width: 300px; padding: 8px;">
+        <button onclick="sendMessage()">Send to Aiden</button>
+        <div id="chat-result" style="margin-top: 10px;"></div>
+    </div>
+
+    <script>
+        // Test API Health
+        async function testAPI() {
+            const statusDiv = document.getElementById('api-status');
+            statusDiv.innerHTML = 'Testing API...';
+            
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusDiv.innerHTML = `✅ API Working: ${data.app} (${data.provider})`;
+                    statusDiv.className = 'success';
+                } else {
+                    statusDiv.innerHTML = `❌ API Error: ${response.status}`;
+                    statusDiv.className = 'error';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `❌ Connection Error: ${error.message}`;
+                statusDiv.className = 'error';
+            }
+        }
+        
+        // Test Chat
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const resultDiv = document.getElementById('chat-result');
+            const message = messageInput.value.trim();
+            
+            if (!message) {
+                alert('Please enter a message');
+                return;
+            }
+            
+            resultDiv.innerHTML = '🤔 Aiden is thinking...';
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        account_id: 'test-user'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">
+                        <strong>You:</strong> ${message}<br>
+                        <strong>Aiden:</strong> ${data.assistant || 'No response'}
+                        ${data.taskcard ? '<br><strong>TaskCard:</strong> Generated!' : ''}
+                    </div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Error: ${data.detail || 'Unknown error'}</div>`;
+                }
+                
+                messageInput.value = '';
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Connection Error: ${error.message}</div>`;
+            }
+        }
+        
+        // Auto-test API on load
+        window.onload = function() {
+            testAPI();
+        };
+        
+        // Enter to send message
+        document.getElementById('messageInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

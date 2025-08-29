@@ -13,3 +13,10 @@ logs/
 memory_db/
 venv/
 .cursor-tutor
+
+# Enhanced Aiden specific
+apps/replit-mvp/aiden-gcp-key.json
+apps/replit-mvp/deployed/
+apps/replit-mvp/*.backup
+apps/replit-mvp/*.log
+apps/replit-mvp/test_enhanced_function.py

@@ -10,8 +10,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, ValidationError
 from dotenv import load_dotenv
 
-# Import enhanced superintelligence
-from superintelligence import AIDEN_SUPERINTELLIGENCE_ENHANCED, AIDEN_SUPERINTELLIGENCE
+# Import superintelligence
+from superintelligence import AIDEN_SUPERINTELLIGENCE
 
 # ---- Setup & Config ----
 ROOT = Path(__file__).parent
@@ -323,28 +323,19 @@ async def chat(body: ChatIn):
             # Fall back to regular chat
             pass
     
-    # Enhanced Aiden execution mode for general requests
-    try:
-        # Log user message
-        await sb_upsert_message(account_id, "user", body.message)
-        
-        # Use enhanced execution-focused Aiden
-        enhanced_response = await AIDEN_SUPERINTELLIGENCE_ENHANCED(body.message, account_id)
-        
-        # Log assistant message
-        await sb_upsert_message(account_id, "assistant", enhanced_response["assistant"])
-        
-        return ChatOut(
-            assistant=enhanced_response["assistant"], 
-            taskcard=enhanced_response.get("taskcard")
-        )
-        
-    except Exception as e:
-        # Fall back to standard chat flow
-        history = await sb_recent_messages(account_id)
-        response = await llm_chat(body.message, body.account_id, history)
-        await sb_upsert_message(account_id, "assistant", response.assistant)
-        return response
+    # Standard chat flow for general inquiries
+    history = await sb_recent_messages(account_id)
+    
+    # Log user message
+    await sb_upsert_message(account_id, "user", body.message)
+    
+    # Get AI response with history
+    response = await llm_chat(body.message, body.account_id, history)
+    
+    # Log assistant message
+    await sb_upsert_message(account_id, "assistant", response.assistant)
+    
+    return response
 
 # ============================================================================
 # 🎓 ADVANCED AIDEN CAPABILITIES - LEARNING & CUSTOM SOLUTIONS

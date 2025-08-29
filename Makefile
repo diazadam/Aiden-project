@@ -17,8 +17,14 @@ run-chat:
 run-voice:
 	cd apps/terminal && ../../$(RUN) aiden_pro.py --voice
 
+run-super:
+	cd apps/terminal && ../../$(RUN) aiden_superintelligence.py
+
+run-menubar:
+	cd apps/menubar && ../../$(RUN) aiden_menubar.py
+
 run-ctl:
-	cd apps/replit-mvp && ../../$(RUN) -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+	cd apps/replit-mvp && ../../$(RUN) -m uvicorn main:app --host 0.0.0.0 --port 8001 --reload
 
 host-list:
 	$(RUN) apps/host/host.py list
